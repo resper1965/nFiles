@@ -89,6 +89,40 @@ Na **raiz do repositório** (`Ingridion`), com o projeto linkado (`.vercel/proje
 
 **Importante:** o deploy deve ser feito **na raiz** (`Ingridion`), não dentro de `frontend/`. O projeto **n-files** tem Root Directory = `frontend`; se rodar `vercel` de dentro de `frontend/`, a Vercel interpreta o path como `frontend/frontend` e falha.
 
+## Ambiente Supabase via CLI (bucket `files`)
+
+Para criar o bucket **files** e políticas RLS no Supabase via CLI/script:
+
+1. **Vincular o repositório ao projeto Supabase** (na raiz do projeto):
+   ```bash
+   supabase link --project-ref <REF>
+   ```
+   Ex.: `supabase link --project-ref dcigykpfdehqbtbaxzak` (site-ness).
+
+2. **Obter as chaves do projeto**:
+   ```bash
+   supabase projects api-keys --project-ref <REF>
+   ```
+   Anote a URL do projeto (`https://<REF>.supabase.co`), a chave **anon** e a **service_role**.
+
+3. **Configurar `frontend/.env.local`** com:
+   - `NEXT_PUBLIC_SUPABASE_URL=https://<REF>.supabase.co`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon>` ou `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=<publishable>`
+   - `SUPABASE_SERVICE_ROLE_KEY=<service_role>` (necessário para o script de criação do bucket e para as API routes de cópia/ZIP)
+
+4. **Criar o bucket `files`** (a partir do frontend):
+   ```bash
+   cd frontend && node scripts/create-files-bucket.mjs
+   ```
+   O script lê `NEXT_PUBLIC_SUPABASE_URL` e `SUPABASE_SERVICE_ROLE_KEY` de `.env.local`. Se o bucket já existir, o script apenas informa.
+
+5. **Criar as políticas RLS no Storage** (Supabase Dashboard → **SQL Editor**):
+   - Abra o arquivo `supabase/sql/storage-policies-files.sql` do repositório.
+   - Cole o conteúdo no SQL Editor e execute.
+   - Se alguma política já existir, remova a linha correspondente ou use `DROP POLICY IF EXISTS ...` antes do `CREATE POLICY`.
+
+**Nota:** A migração em `supabase/migrations/20260204220000_create_files_bucket_and_policies.sql` contém o mesmo bucket + políticas; use-a apenas se o projeto remoto não tiver histórico de migrações conflitante (caso contrário, use o script + SQL acima).
+
 ## Referências
 
 - [Vercel CLI - Environment Variables](https://vercel.com/docs/cli/env)

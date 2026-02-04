@@ -7,16 +7,26 @@ import { Sparkles } from "lucide-react";
 
 type SuggestType = "suggest-name" | "suggest-rule";
 
+export type SuggestPayload = {
+  currentName?: string;
+  context?: string;
+  metadata?: { createdAt?: string; contentType?: string; size?: number };
+  contentSnippet?: string;
+};
+
 export function SuggestWithAI({
   type = "suggest-name",
   currentName = "",
   onSuggestion,
   placeholder,
+  payloadExtras,
 }: {
   type?: SuggestType;
   currentName?: string;
   onSuggestion?: (suggestion: string) => void;
   placeholder?: string;
+  /** Metadados e/ou trecho de conteúdo para enriquecer a sugestão (regra + IA). */
+  payloadExtras?: SuggestPayload;
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -28,16 +38,15 @@ export function SuggestWithAI({
     setError(null);
     setSuggestion("");
     try {
+      const payload: SuggestPayload = {
+        currentName: inputValue.trim(),
+        context: type === "suggest-rule" ? "Padrão seed: RAZÃO | OPERADORA | TIPO DOC | DESCRIÇÃO | DATA" : "",
+        ...payloadExtras,
+      };
       const res = await fetch("/api/ai/suggest", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          type,
-          payload: {
-            currentName: inputValue.trim(),
-            context: type === "suggest-rule" ? "Padrão seed: RAZÃO | OPERADORA | TIPO DOC | DESCRIÇÃO | DATA" : "",
-          },
-        }),
+        body: JSON.stringify({ type, payload }),
       });
       const data = await res.json();
       if (!res.ok) {

@@ -3,8 +3,10 @@
 This directory contains plans for coordinating work across documentation and playbooks.
 
 ## Plan Queue
-1. [Adapt Shadcn File Manager para n.files](./adapt-shadcn-file-manager-nfiles.md) — Usar dashboard Bundui (shadcn) como base; tela de ingestão, file manager, regras, busca.
-2. [Usar IA na aplicação](./use-ai-in-application.md) — Integrar IA (ex.: Gemini) para sugestões de nomes, regras e assistência; API no servidor com `GEMINI_API_KEY`; fluxos na ingestão e no editor de regras.
+1. [Adapt Shadcn File Manager Nfiles](./adapt-shadcn-file-manager-nfiles.md)
+2. [Fluxo Usuario Renomeacao](./fluxo-usuario-renomeacao.md)
+3. [Proximos Passos Fluxo Usuario](./proximos-passos-fluxo-usuario.md)
+4. [Use Ai In Application](./use-ai-in-application.md)
 
 ## How To Create Or Update Plans
 - Run "ai-context plan <name>" to scaffold a new plan template.

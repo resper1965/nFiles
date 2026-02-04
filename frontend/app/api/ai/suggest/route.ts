@@ -20,7 +20,15 @@ export async function POST(request: NextRequest) {
     );
   }
 
-  let body: { type: string; payload?: { currentName?: string; context?: string } };
+  let body: {
+    type: string;
+    payload?: {
+      currentName?: string;
+      context?: string;
+      metadata?: { createdAt?: string; contentType?: string; size?: number };
+      contentSnippet?: string;
+    };
+  };
   try {
     body = await request.json();
   } catch {
@@ -31,7 +39,12 @@ export async function POST(request: NextRequest) {
   }
 
   const { type = "suggest-name", payload = {} } = body;
-  const { currentName = "", context = "" } = payload;
+  const {
+    currentName = "",
+    context = "",
+    metadata,
+    contentSnippet = "",
+  } = payload;
 
   if (!["suggest-name", "suggest-rule"].includes(type)) {
     return NextResponse.json(
@@ -51,9 +64,17 @@ export async function POST(request: NextRequest) {
         ? "Você sugere nomes de arquivos válidos para Windows: sem caracteres \\ / : * ? \" < > |. Use no máximo 255 caracteres. Resposta apenas com o nome sugerido, sem explicação."
         : "Você sugere regras ou templates de nomenclatura para renomeação de arquivos. Resposta em uma linha ou lista curta, em português. Mantenha melhores práticas: caracteres válidos no Windows, padrões legíveis.";
 
+    const metaStr =
+      metadata &&
+      (metadata.createdAt || metadata.contentType != null || metadata.size != null)
+        ? ` Metadados: ${metadata.createdAt ? `criado em ${metadata.createdAt}` : ""}${metadata.contentType ? `, tipo ${metadata.contentType}` : ""}${metadata.size != null ? `, tamanho ${metadata.size}` : ""}.`
+        : "";
+    const snippetStr = contentSnippet
+      ? ` Trecho do conteúdo (início do arquivo): "${contentSnippet.slice(0, 1500).trim()}".`
+      : "";
     const userPrompt =
       type === "suggest-name"
-        ? `Sugira um nome de arquivo apropriado. Nome atual: "${currentName}". ${context ? `Contexto: ${context}` : ""}`
+        ? `Sugira um nome de arquivo apropriado. Nome atual: "${currentName}".${metaStr}${snippetStr} ${context ? `Contexto: ${context}` : ""}`
         : `Sugira uma regra ou template de nomenclatura para renomeação de arquivos. ${context ? `Contexto: ${context}` : ""} Referência (opcional): ${seedPattern}`;
 
     const response = await ai.models.generateContent({

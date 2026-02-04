@@ -5,7 +5,7 @@ import { resolveNameConflicts } from "@/lib/patterns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { List, Plus, Trash2, Loader2, CheckCircle, AlertCircle, FolderInput, Package } from "lucide-react";
+import { List, Plus, Trash2, Loader2, CheckCircle, AlertCircle, FolderInput, Package, Copy } from "lucide-react";
 
 export type PreviewItem = { from: string; to: string };
 
@@ -32,9 +32,12 @@ export function PreviewRenames({
   items = [],
   onItemsChange,
   onApplyRenames,
+  onCopyBatch,
   applyTemplate,
   storageFileNames = [],
   searchQuery = "",
+  selectionCount = 0,
+  onUseSelection,
 }: {
   items?: PreviewItem[];
   onItemsChange?: (items: PreviewItem[]) => void;
@@ -46,13 +49,22 @@ export function PreviewRenames({
   storageFileNames?: string[];
   /** Filtra as linhas exibidas (nome atual ou nome novo contém o termo). */
   searchQuery?: string;
+  /** Número de itens selecionados na árvore; se > 0 e onUseSelection informado, mostra botão "Usar seleção no preview". */
+  selectionCount?: number;
+  /** Retorna os nomes (paths relativos) da seleção na árvore para preencher o preview. */
+  onUseSelection?: () => Promise<string[]>;
+  /** Cópia em massa: copia para Renomeados; parent abre modal com resultado. */
+  onCopyBatch?: (items: PreviewItem[]) => Promise<{ copied: number; failed: { fromPath: string; error: string }[] }>;
 }) {
   const [list, setList] = useState<PreviewItem[]>(items);
   const [inputValue, setInputValue] = useState("");
   const [applying, setApplying] = useState(false);
   const [applyError, setApplyError] = useState<string | null>(null);
   const [applySuccess, setApplySuccess] = useState(false);
+  const [copying, setCopying] = useState(false);
+  const [copyError, setCopyError] = useState<string | null>(null);
   const [seedLoading, setSeedLoading] = useState(false);
+  const [selectionLoading, setSelectionLoading] = useState(false);
 
   const apply = applyTemplate ?? applySeedTemplate;
 
@@ -128,6 +140,17 @@ export function PreviewRenames({
     }
   };
 
+  const handleUseSelection = async () => {
+    if (!onUseSelection) return;
+    setSelectionLoading(true);
+    try {
+      const names = await onUseSelection();
+      addNamesToList(names);
+    } finally {
+      setSelectionLoading(false);
+    }
+  };
+
   const handleApplyRenames = async () => {
     if (!onApplyRenames || list.length === 0) return;
     setApplying(true);
@@ -141,6 +164,19 @@ export function PreviewRenames({
       setApplySuccess(true);
       updateList([]);
       setTimeout(() => setApplySuccess(false), 3000);
+    }
+  };
+
+  const handleCopyBatch = async () => {
+    if (!onCopyBatch || list.length === 0) return;
+    setCopying(true);
+    setCopyError(null);
+    try {
+      await onCopyBatch(list);
+    } catch (e) {
+      setCopyError(e instanceof Error ? e.message : "Erro ao copiar em massa.");
+    } finally {
+      setCopying(false);
     }
   };
 
@@ -194,6 +230,22 @@ export function PreviewRenames({
               Usar arquivos do Storage ({storageFileNames.length})
             </Button>
           )}
+          {selectionCount > 0 && onUseSelection && (
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleUseSelection}
+              disabled={selectionLoading}
+            >
+              {selectionLoading ? (
+                <Loader2 className="size-4 animate-spin" />
+              ) : (
+                <FolderInput className="size-4" />
+              )}
+              Usar seleção no preview ({selectionCount})
+            </Button>
+          )}
           <Button type="button" variant="secondary" size="sm" onClick={generatePreview}>
             Gerar preview
           </Button>
@@ -214,7 +266,34 @@ export function PreviewRenames({
               )}
             </Button>
           )}
+          {onCopyBatch && list.length > 0 && (
+            <Button
+              type="button"
+              variant="secondary"
+              size="sm"
+              disabled={copying}
+              onClick={handleCopyBatch}
+            >
+              {copying ? (
+                <>
+                  <Loader2 className="size-4 animate-spin" />
+                  Copiando…
+                </>
+              ) : (
+                <>
+                  <Copy className="size-4" />
+                  Copiar com nome correto
+                </>
+              )}
+            </Button>
+          )}
         </div>
+        {copyError && (
+          <div className="flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+            <AlertCircle className="size-4 shrink-0" />
+            {copyError}
+          </div>
+        )}
         {applyError && (
           <div className="flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive">
             <AlertCircle className="size-4 shrink-0" />

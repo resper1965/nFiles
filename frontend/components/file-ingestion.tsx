@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { useAuth } from "@/contexts/auth-context";
+import { useProject } from "@/contexts/project-context";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload, FileText, Loader2, Download, AlertCircle } from "lucide-react";
@@ -26,6 +27,7 @@ export function FileIngestion({
   searchQuery?: string;
 } = {}) {
   const { user } = useAuth();
+  const { currentProject } = useProject();
   const [files, setFiles] = useState<StorageFile[]>([]);
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -38,7 +40,7 @@ export function FileIngestion({
     setLoading(true);
     setError(null);
     try {
-      const list = await listFiles(user.id);
+      const list = await listFiles(user.id, currentProject ?? "");
       setFiles(list);
       onFilesLoaded?.(list);
     } catch (e) {
@@ -47,7 +49,7 @@ export function FileIngestion({
     } finally {
       setLoading(false);
     }
-  }, [user?.id, onFilesLoaded]);
+  }, [user?.id, currentProject, onFilesLoaded]);
 
   useEffect(() => {
     if (user?.id) {
@@ -67,7 +69,7 @@ export function FileIngestion({
       let hasError = false;
       for (let i = 0; i < selected.length; i++) {
         const file = selected[i];
-        const { error: err } = await uploadFile(user.id, file);
+        const { error: err } = await uploadFile(user.id, file, currentProject ?? undefined);
         if (err) {
           setError(err.message);
           hasError = true;
@@ -77,7 +79,7 @@ export function FileIngestion({
       setUploading(false);
       e.target.value = "";
     },
-    [user?.id, loadFiles]
+    [user?.id, currentProject, loadFiles]
   );
 
   const handleDownload = useCallback(async (path: string) => {

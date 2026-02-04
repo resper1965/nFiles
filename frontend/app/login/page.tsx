@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import Link from "next/link";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/contexts/auth-context";
+import { NessBrand } from "@/components/ness-brand";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -11,11 +11,17 @@ import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { signIn, loading: authLoading } = useAuth();
+  const { signIn, user, loading: authLoading } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!authLoading && user) {
+      router.replace("/dashboard");
+    }
+  }, [authLoading, user, router]);
 
   function authErrorMessage(err: Error | null): string {
     if (!err) return "Erro ao entrar.";
@@ -42,12 +48,22 @@ export default function LoginPage() {
     router.refresh();
   }
 
+  if (user) {
+    return (
+      <div className="flex min-h-screen items-center justify-center p-4">
+        <p className="text-muted-foreground">Redirecionando…</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>ness</CardTitle>
-          <CardDescription>Entre com email e senha para acessar o file manager.</CardDescription>
+          <CardTitle>
+            <NessBrand textClassName="text-card-foreground" />
+          </CardTitle>
+          <CardDescription>Entre com email e senha para acessar o dashboard.</CardDescription>
         </CardHeader>
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
@@ -86,10 +102,7 @@ export default function LoginPage() {
             </Button>
           </form>
           <p className="mt-4 text-center text-sm text-muted-foreground">
-            <Link href="/dashboard" className="underline hover:text-foreground">
-              Ir para o dashboard
-            </Link>{" "}
-            (sem login)
+            Área restrita. Entre para acessar o dashboard.
           </p>
         </CardContent>
       </Card>
