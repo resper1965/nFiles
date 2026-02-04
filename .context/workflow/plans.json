@@ -1,14 +1,14 @@
 {
   "active": [
     {
-      "slug": "proximos-passos-fluxo-usuario",
-      "path": "plans/proximos-passos-fluxo-usuario.md",
-      "title": "Próximos passos do fluxo do usuário — árvore, regra+IA, cópia, ZIP, documentação",
-      "summary": "Plano que detalha os 6 próximos passos do fluxo de renomeação (fluxo-usuario-renomeacao.md): (1) Árvore + seleção — listar Storage por pastas e exibir como árvore por projeto; permitir selecionar arquivos/pastas para o lote; preview só com itens selecionados. (2) Regra + IA com metadados/conteúdo — definir metadados (created_at, content-type); extração de conteúdo (PDF, DOCX) em API/Edge; IA recebe metadados e trecho de conteúdo para sugerir/validar nome. (3) Cópia em massa com nome correto — implementar cópia no Storage (não só move); definir destino (pasta Renomeados, estrutura por data); batch com feedback. (4) Download ZIP + documentação de índices — exportar resultado em ZIP; índice (CSV/JSON) com nome original → novo, caminho, data; dentro do ZIP ou separado. (5) Uso no repositório — UI explícita: continuar no file manager após lote; opção Baixar ZIP vs Continuar no repositório. (6) Documentação — atualizar dinâmica-da-aplicacao.md; registrar decisões (cópia vs move, destino, formato índice, metadados/conteúdo).",
-      "linkedAt": "2026-02-04T19:32:20.418Z",
+      "slug": "refatoracao-frontend-clone-shadcn",
+      "path": "plans/refatoracao-frontend-clone-shadcn.md",
+      "title": "Refatoração do frontend n.files usando resper1965/clone (Shadcn UI Kit)",
+      "summary": "Refatorar o frontend do n.files (Ingridion) usando o repositório [resper1965/clone](https://github.com/resper1965/clone) como base de UI: adotar layout (header, sidebar), componentes e posições do clone; adaptar todas as telas (login, dashboard, ingestão, projetos, file manager) e integrar o file manager ao dashboard do clone.",
+      "linkedAt": "2026-02-04T23:20:49.495Z",
       "status": "active"
     }
   ],
   "completed": [],
-  "primary": "proximos-passos-fluxo-usuario"
+  "primary": "refatoracao-frontend-clone-shadcn"
 }

@@ -20,6 +20,7 @@ export function SuggestWithAI({
   onSuggestion,
   placeholder,
   payloadExtras,
+  getContentSnippet,
 }: {
   type?: SuggestType;
   currentName?: string;
@@ -27,6 +28,8 @@ export function SuggestWithAI({
   placeholder?: string;
   /** Metadados e/ou trecho de conteúdo para enriquecer a sugestão (regra + IA). */
   payloadExtras?: SuggestPayload;
+  /** Se informado, chama antes da sugestão para obter trecho do documento (ex.: extração de PDF/DOCX). A IA usa o conteúdo para extrair os campos do índice. */
+  getContentSnippet?: () => Promise<string | undefined>;
 }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,10 +41,15 @@ export function SuggestWithAI({
     setError(null);
     setSuggestion("");
     try {
+      let contentSnippet = payloadExtras?.contentSnippet;
+      if (!contentSnippet && getContentSnippet) {
+        contentSnippet = (await getContentSnippet()) ?? undefined;
+      }
       const payload: SuggestPayload = {
         currentName: inputValue.trim(),
-        context: type === "suggest-rule" ? "Padrão seed: RAZÃO | OPERADORA | TIPO DOC | DESCRIÇÃO | DATA" : "",
+        context: type === "suggest-rule" ? "Índice: RAZÃO SOCIAL DO CLIENTE | NOME DA OPERADORA | TIPO DE DOCUMENTO | OBJETO DO DOCUMENTO | DATA DE EMISSÃO DO DOCUMENTO" : "",
         ...payloadExtras,
+        ...(contentSnippet ? { contentSnippet } : {}),
       };
       const res = await fetch("/api/ai/suggest", {
         method: "POST",

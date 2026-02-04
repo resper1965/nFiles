@@ -21,7 +21,7 @@ const montserrat = Montserrat({
 
 export const metadata: Metadata = {
   title: "ness",
-  description: "Sistema de renomeação de arquivos com ingestão, regras e file manager (n.files).",
+  description: "Gestão de documentos com ingestão, regras e file manager (n.files).",
 };
 
 export default function RootLayout({

@@ -14,7 +14,7 @@ scaffoldVersion: "2.0.0"
 
 ## Propósito
 
-O **n.files** é um sistema de renomeação de arquivos para **Windows** que:
+O **n.files** é um sistema de **gestão de documentos** para **Windows** que:
 
 1. **Tela de ingestão** — Ingestão de arquivos em **lote** ou **unitária**; ao final da ingestão o sistema gera os arquivos renomeados e **insere-os no modelo file manager** da aplicação.
 2. **Botão de renomeação** — Disparo explícito da aplicação das regras (preview e/ou execução).

@@ -1,0 +1,12 @@
+{
+  "decisions": [
+    {
+      "title": "Review fase R — Arquitetura, código e segurança",
+      "description": "Architect: Rotas e responsabilidades por tela estão claras (Login, Dashboard, Ingestão, /dashboard/projetos, File system). Sidebar sem projeto; Projetos concentra criação/seleção, regras, preview e aplicação. Code-reviewer: Escopo de refatoração definido (extrair regras/preview de file-manager para projetos; file-manager só árvore); variáveis predeterminadas documentadas. Security-auditor: Nenhuma nova superfície de ataque; /dashboard/projetos sob layout autenticado; paths continuam userId/projeto; APIs existentes (copy-batch, zip) já validam sessão e path. Plano aprovado para fase Execute.",
+      "phase": "R",
+      "status": "accepted",
+      "id": "dec-1770245761373",
+      "decidedAt": "2026-02-04T22:56:01.373Z"
+    }
+  ]
+}

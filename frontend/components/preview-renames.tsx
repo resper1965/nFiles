@@ -181,7 +181,7 @@ export function PreviewRenames({
   };
 
   return (
-    <Card>
+    <Card className="border shadow-sm">
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <List className="size-5" />

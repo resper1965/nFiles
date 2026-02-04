@@ -1,0 +1,14 @@
+{
+  "active": [
+    {
+      "slug": "reestruturacao-telas-nfiles",
+      "path": "plans/reestruturacao-telas-nfiles.md",
+      "title": "Reestruturação de telas n.files — Login, Dashboard, Ingestão, Projetos, File system",
+      "summary": "Reorganizar a aplicação n.files em 5 telas: (1) Login; (2) Dashboard principal com indicadores (projetos e arquivos); (3) Ingestão por lote/unitário; (4) Página Projetos com regras de renomeação, preview e aplicação no Storage (sem IA, sem busca, sem árvore); (5) File system com árvore (raiz = projeto). Remover criação de projeto do sidebar; variáveis de regras predeterminadas.",
+      "linkedAt": "2026-02-04T22:54:38.945Z",
+      "status": "active"
+    }
+  ],
+  "completed": [],
+  "primary": "reestruturacao-telas-nfiles"
+}

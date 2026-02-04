@@ -1,0 +1,42 @@
+project:
+  name: "reestruturacao-telas-nfiles"
+  scale: LARGE
+  started: "2026-02-04T22:54:19.284Z"
+  current_phase: C
+
+phases:
+  P:
+    status: filled
+    started_at: "2026-02-04T22:54:19.284Z"
+    completed_at: "2026-02-04T22:55:04.350Z"
+  R:
+    status: filled
+    started_at: "2026-02-04T22:55:04.351Z"
+    completed_at: "2026-02-04T22:56:06.121Z"
+  E:
+    status: filled
+    started_at: "2026-02-04T22:56:06.121Z"
+    completed_at: "2026-02-04T23:00:30.622Z"
+  V:
+    status: filled
+    started_at: "2026-02-04T23:00:30.625Z"
+    completed_at: "2026-02-04T23:01:08.072Z"
+  C:
+    status: in_progress
+    started_at: "2026-02-04T23:01:08.073Z"
+
+execution:
+  history:
+    - timestamp: "2026-02-04T23:01:08.073Z"
+      phase: C
+      action: started
+  last_activity: "2026-02-04T23:01:08.073Z"
+  resume_context: "Fase C (Confirmação) em progresso"
+
+approval:
+  plan_created: true
+  plan_approved: true
+  approved_by: "solo-dev"
+  approved_at: "2026-02-04T22:55:59.268Z"
+  approval_notes: "Review R concluído: arquitetura, escopo e segurança validados. Aprovado para Execute."
+

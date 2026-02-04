@@ -115,6 +115,26 @@ export async function listAllFilesUnderPrefix(
 }
 
 /**
+ * Conta arquivos (folhas) em um projeto. Usado para KPIs do dashboard.
+ */
+export async function countFilesInProject(userId: string, projectName: string): Promise<number> {
+  const files = await listAllFilesUnderPrefix(userId, projectName, "");
+  return files.length;
+}
+
+/**
+ * Conta o total de arquivos em todos os projetos do usuário. Usado para KPI do dashboard.
+ */
+export async function countAllFilesForUser(userId: string): Promise<number> {
+  const projectNames = await listProjectNames(userId);
+  let total = 0;
+  for (const name of projectNames) {
+    total += await countFilesInProject(userId, name);
+  }
+  return total;
+}
+
+/**
  * Expande uma seleção (paths relativos ao projeto) para lista plana de paths de arquivos.
  * Paths que forem pastas (têm filhos no Storage) são expandidos com listAllFilesUnderPrefix.
  */

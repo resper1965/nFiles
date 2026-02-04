@@ -1,47 +1,39 @@
 project:
-  name: "proximos-passos-fluxo-usuario"
-  scale: LARGE
-  started: "2026-02-04T19:10:59.245Z"
-  current_phase: C
+  name: "refatoracao-frontend-clone-shadcn"
+  scale: MEDIUM
+  started: "2026-02-04T23:20:28.617Z"
+  current_phase: E
 
 phases:
   P:
     status: filled
-    started_at: "2026-02-04T19:10:59.245Z"
-    completed_at: "2026-02-04T19:32:30.243Z"
+    started_at: "2026-02-04T23:20:28.617Z"
+    completed_at: "2026-02-04T23:23:17.913Z"
   R:
-    status: filled
-    started_at: "2026-02-04T19:32:30.246Z"
-    completed_at: "2026-02-04T20:03:15.973Z"
+    status: completed
+    started_at: "2026-02-04T23:23:17.914Z"
+    completed_at: "2026-02-04T23:23:44.930Z"
   E:
-    status: filled
-    started_at: "2026-02-04T20:03:15.974Z"
-    completed_at: "2026-02-04T20:21:01.110Z"
+    status: in_progress
+    started_at: "2026-02-04T23:23:44.931Z"
   V:
-    status: filled
-    started_at: "2026-02-04T20:21:01.111Z"
-    completed_at: "2026-02-04T20:22:11.082Z"
+    status: pending
   C:
-    status: filled
-    started_at: "2026-02-04T20:22:11.084Z"
-    completed_at: "2026-02-04T21:00:00.000Z"
+    status: skipped
+    reason: "Not required for scale MEDIUM"
 
 execution:
   history:
-    - timestamp: "2026-02-04T20:22:11.084Z"
-      phase: C
+    - timestamp: "2026-02-04T23:23:44.931Z"
+      phase: E
       action: started
-    - timestamp: "2026-02-04T21:00:00.000Z"
-      phase: C
-      action: completed
-      notes: "Passos 3–6 implementados (cópia em massa, ZIP, modal pós-lote, documentação); ai-context atualizado."
-  last_activity: "2026-02-04T21:00:00.000Z"
-  resume_context: "Fase C concluída. 6 passos do plano implementados."
+  last_activity: "2026-02-04T23:23:44.931Z"
+  resume_context: "Fase E (Execução) em progresso"
 
 approval:
   plan_created: true
   plan_approved: true
-  approved_by: "reviewer"
-  approved_at: "2026-02-04T20:03:11.685Z"
-  approval_notes: "Revisão fase R concluída em review-phase-r.md; architect, code-reviewer e security-auditor aprovados."
+  approved_by: "solo-dev"
+  approved_at: "2026-02-04T23:23:41.622Z"
+  approval_notes: "Aprovado para avançar à fase Execute."
 

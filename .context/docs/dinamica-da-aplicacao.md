@@ -6,7 +6,7 @@ Documento que explica **como a aplicação funciona**: o que ela faz, por onde o
 
 ## 1. O que a aplicação faz (em uma frase)
 
-A **ness** é um sistema de **renomeação de arquivos em lote**: você envia arquivos para a nuvem (Supabase Storage), escolhe um **padrão de nome** (regra) e a aplicação mostra um **preview** (nome atual → nome novo); quando você confirma, ela **renomeia** os arquivos no Storage conforme a regra.
+A **ness** é um sistema de **gestão de documentos**: você envia arquivos para a nuvem (Supabase Storage), escolhe um **padrão de nome** (regra) e a aplicação mostra um **preview** (nome atual → nome novo); quando você confirma, ela **renomeia** os arquivos no Storage conforme a regra.
 
 ---
 

@@ -14,13 +14,15 @@ Regra de nomenclatura sugerida pela **usuária do seed existente**, guardada par
 
 ## Padrão: nomes em letras maiúsculas
 
-**ATENÇÃO:** Nomear com **letras maiúsculas** com o seguinte padrão:
+**ATENÇÃO:** Nomear com **letras maiúsculas** com o seguinte **índice da regra**:
 
-1. **RAZÃO SOCIAL DA EMPRESA:** ex.: INGREDION  
+1. **RAZÃO SOCIAL DO CLIENTE:** ex.: INGREDION  
 2. **NOME DA OPERADORA:** ex.: UNIMED NACIONAL  
-3. **TIPO DE DOCUMENTO:** CONTRATO, TERMO DE ADITAMENTO, CARTA OU PROPOSTA COMERCIAL  
-4. **BREVE DESCRIÇÃO DO CONTEÚDO PRINCIPAL:** RENOVAÇÃO, REAJUSTE, ALTERAÇÃO DE REEMBOLSO etc  
-5. **DATA DA EMISSÃO:** DIA/MÊS/ANO  
+3. **TIPO DE DOCUMENTO:** CONTRATO, ADITAMENTO, CARTA, PROPOSTA COMERCIAL etc  
+4. **OBJETO DO DOCUMENTO:** ex.: RENOVAÇÃO, REAJUSTE, ALTERAÇÃO DE REEMBOLSO  
+5. **DATA DE EMISSÃO DO DOCUMENTO:** DIA/MÊS/ANO  
+
+Esses dados podem ou não fazer parte do título atual; a IA lê o conteúdo do documento (PDF/DOCX) para extrair e gerar o nome.  
 
 ---
 

@@ -56,8 +56,8 @@ export async function POST(request: NextRequest) {
   try {
     const ai = new GoogleGenAI({ apiKey });
 
-    const seedPattern =
-      "Padrão sugerido (seed): RAZÃO SOCIAL | OPERADORA | TIPO DE DOCUMENTO (CONTRATO, TERMO DE ADITAMENTO, CARTA OU PROPOSTA COMERCIAL) | DESCRIÇÃO DO CONTEÚDO (RENOVAÇÃO, REAJUSTE, etc.) | DATA DIA/MÊS/ANO. Exemplo: INGREDION | UNIMED NACIONAL | CONTRATO | RENOVAÇÃO | 04/02/2026.";
+    const indexRule =
+      "Índice: RAZÃO SOCIAL DO CLIENTE | NOME DA OPERADORA | TIPO DE DOCUMENTO (ex.: CONTRATO, ADITAMENTO, CARTA, PROPOSTA COMERCIAL) | OBJETO DO DOCUMENTO (ex.: RENOVAÇÃO, REAJUSTE) | DATA DE EMISSÃO DO DOCUMENTO (DIA/MÊS/ANO). Exemplo: INGREDION | UNIMED NACIONAL | CONTRATO | RENOVAÇÃO | 04/02/2026.";
 
     const systemInstruction =
       type === "suggest-name"
@@ -70,12 +70,16 @@ export async function POST(request: NextRequest) {
         ? ` Metadados: ${metadata.createdAt ? `criado em ${metadata.createdAt}` : ""}${metadata.contentType ? `, tipo ${metadata.contentType}` : ""}${metadata.size != null ? `, tamanho ${metadata.size}` : ""}.`
         : "";
     const snippetStr = contentSnippet
-      ? ` Trecho do conteúdo (início do arquivo): "${contentSnippet.slice(0, 1500).trim()}".`
+      ? `\n\nConteúdo do documento (leia e extraia as informações abaixo para montar o nome):\n"${contentSnippet.slice(0, 4000).trim()}"`
       : "";
+    const nameInstruction =
+      contentSnippet
+        ? `Os campos do índice (razão social do cliente, nome da operadora, tipo de documento, objeto do documento, data de emissão) podem ou não estar no título atual. LEIA o conteúdo do documento acima e extraia/infira esses campos. Gere o nome no formato: RAZÃO | OPERADORA | TIPO | OBJETO | DATA (DD/MM/ANO). Use maiúsculas e separador " | ".`
+        : "Sugira um nome de arquivo no formato do índice quando possível.";
     const userPrompt =
       type === "suggest-name"
-        ? `Sugira um nome de arquivo apropriado. Nome atual: "${currentName}".${metaStr}${snippetStr} ${context ? `Contexto: ${context}` : ""}`
-        : `Sugira uma regra ou template de nomenclatura para renomeação de arquivos. ${context ? `Contexto: ${context}` : ""} Referência (opcional): ${seedPattern}`;
+        ? `${nameInstruction} Nome atual do arquivo: "${currentName}".${metaStr}${snippetStr}${context ? `\nContexto: ${context}` : ""}`
+        : `Sugira uma regra ou template de nomenclatura para renomeação de arquivos. ${context ? `Contexto: ${context}` : ""} Referência (opcional): ${indexRule}`;
 
     const response = await ai.models.generateContent({
       model: "gemini-2.0-flash",
@@ -99,10 +103,17 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ suggestion });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Erro ao chamar Gemini";
+    const raw = err instanceof Error ? err.message : String(err);
+    const isInvalidKey =
+      raw.includes("API key not valid") ||
+      raw.includes("API_KEY_INVALID") ||
+      raw.includes("INVALID_ARGUMENT");
+    const message = isInvalidKey
+      ? "Chave da API Gemini inválida. Obtenha uma chave em Google AI Studio (aistudio.google.com) e configure GEMINI_API_KEY nas variáveis de ambiente (Vercel ou .env.local)."
+      : raw;
     return NextResponse.json(
       { error: message },
-      { status: 502 }
+      { status: isInvalidKey ? 401 : 502 }
     );
   }
 }

@@ -1,6 +1,6 @@
 # n.files
 
-**ness** — Sistema de renomeação de arquivos para **Windows**, com **tela de ingestão** (lote ou único), **botão de renomeação**, **regras** (melhores práticas + ingerência do usuário), leitura de arquivos quando necessário para o nome, e **inserção dos renomeados no modelo file manager** da aplicação.
+**ness** — Sistema de **gestão de documentos** para **Windows**, com **tela de ingestão** (lote ou único), **botão de renomeação**, **regras** (melhores práticas + ingerência do usuário), leitura de arquivos quando necessário para o nome, e **inserção dos renomeados no modelo file manager** da aplicação.
 
 **Repositório:** [github.com/resper1965/nFiles](https://github.com/resper1965/nFiles)
 

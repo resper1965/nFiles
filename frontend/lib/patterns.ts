@@ -60,14 +60,14 @@ function applySeedSimple(name: string, index: number): string {
   return `${safe} | ${date}${suffix}${ext}`;
 }
 
-/** Padrão seed completo: RAZÃO | OPERADORA | TIPO DOC | DESCRIÇÃO | DATA. Preserva extensão. */
+/** Padrão seed completo: RAZÃO SOCIAL DO CLIENTE | NOME DA OPERADORA | TIPO DE DOCUMENTO | OBJETO DO DOCUMENTO | DATA DE EMISSÃO. Preserva extensão. */
 function applySeedFull(name: string, index: number): string {
   const ext = getExtension(name);
   const base = name.replace(/\.[^/.]+$/, "") || "arquivo";
   const safe = sanitize(base).toUpperCase().replace(/\s+/g, "_");
   const date = dateSegment();
   const suffix = index > 0 ? `_${index}` : "";
-  return `${safe} | OPERADORA | TIPO_DOC | DESCRICAO | ${date}${suffix}${ext}`;
+  return `${safe} | OPERADORA | TIPO_DOC | OBJETO | ${date}${suffix}${ext}`;
 }
 
 /** Overrides para o padrão Seed completo (ingerência do usuário). */
@@ -85,7 +85,7 @@ function toSegment(value: string | undefined, fallback: string): string {
 
 /**
  * Retorna uma função apply que usa os overrides para o padrão Seed completo.
- * RAZÃO: override ou derivado do nome do arquivo; OPERADORA, TIPO_DOC, DESCRICAO: overrides ou placeholders.
+ * Índice: RAZÃO SOCIAL DO CLIENTE | OPERADORA | TIPO DE DOCUMENTO | DESCRIÇÃO | DATA DE EMISSÃO.
  */
 export function createSeedFullApply(overrides: SeedFullOverrides): (fileName: string, index: number) => string {
   return (name: string, index: number) => {
@@ -94,10 +94,10 @@ export function createSeedFullApply(overrides: SeedFullOverrides): (fileName: st
     const razao = toSegment(overrides.razao, sanitize(base).toUpperCase().replace(/\s+/g, "_"));
     const operadora = toSegment(overrides.operadora, "OPERADORA");
     const tipoDoc = toSegment(overrides.tipoDoc, "TIPO_DOC");
-    const descricao = toSegment(overrides.descricao, "DESCRICAO");
+    const objeto = toSegment(overrides.descricao, "OBJETO");
     const date = dateSegment();
     const suffix = index > 0 ? `_${index}` : "";
-    return `${razao} | ${operadora} | ${tipoDoc} | ${descricao} | ${date}${suffix}${ext}`;
+    return `${razao} | ${operadora} | ${tipoDoc} | ${objeto} | ${date}${suffix}${ext}`;
   };
 }
 
@@ -129,8 +129,8 @@ export const NAMING_PATTERNS: NamingPattern[] = [
   },
   {
     id: "seed-full",
-    label: "Seed completo (RAZÃO | OPERADORA | TIPO | DESCRIÇÃO | DATA)",
-    description: "Padrão completo do seed; edite manualmente OPERADORA, TIPO_DOC e DESCRICAO após gerar.",
+    label: "Seed completo (RAZÃO SOCIAL | OPERADORA | TIPO DOC | OBJETO | DATA EMISSÃO)",
+    description: "Índice: Razão social do cliente | Nome da operadora | Tipo de documento | Objeto do documento | Data de emissão. Edite após gerar; a IA pode extrair do conteúdo.",
     apply: applySeedFull,
   },
   {

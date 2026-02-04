@@ -1,6 +1,6 @@
 # Frontend — n.files (ness)
 
-Interface do usuário do sistema de renomeação **n.files**.
+Interface do usuário do sistema de **gestão de documentos** **n.files**.
 
 ## Stack
 

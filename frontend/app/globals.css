@@ -126,6 +126,11 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* Dropdown nativo: no dark mode o popover do select costuma ser claro; texto escuro para contraste */
+  .dark select option {
+    background: #fff;
+    color: #171717;
+  }
 }
 
 @layer utilities {

@@ -6,7 +6,7 @@ import { useAuth } from "@/contexts/auth-context";
 import { NessBrand } from "@/components/ness-brand";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
@@ -58,54 +58,68 @@ export default function LoginPage() {
 
   return (
     <div className="flex min-h-screen items-center justify-center p-4">
-      <Card className="w-full max-w-md">
-        <CardHeader>
-          <CardTitle>
-            <NessBrand textClassName="text-card-foreground" />
+      <div className="w-full max-w-md space-y-8">
+        <div className="text-center">
+          <CardTitle className="mt-6 text-3xl font-bold tracking-tight">
+            <NessBrand textClassName="text-foreground" className="text-3xl" />
           </CardTitle>
-          <CardDescription>Entre com email e senha para acessar o dashboard.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="seu@email.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
+          <CardDescription className="mt-2 text-sm">
+            Entre com email e senha para acessar o dashboard (n.files).
+          </CardDescription>
+        </div>
+
+        <Card className="border shadow-sm">
+          <CardContent className="pt-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    placeholder="seu@email.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                    disabled={authLoading || loading}
+                    autoComplete="email"
+                    className="w-full"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="password">Senha</Label>
+                  <Input
+                    id="password"
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                    disabled={authLoading || loading}
+                    autoComplete="current-password"
+                    className="w-full"
+                  />
+                </div>
+              </div>
+              {error && (
+                <p className="text-sm text-destructive" role="alert">
+                  {error}
+                </p>
+              )}
+              <Button
+                type="submit"
+                className="w-full"
                 disabled={authLoading || loading}
-                autoComplete="email"
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="password">Senha</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                disabled={authLoading || loading}
-                autoComplete="current-password"
-              />
-            </div>
-            {error && (
-              <p className="text-sm text-destructive" role="alert">
-                {error}
-              </p>
-            )}
-            <Button type="submit" className="w-full" disabled={authLoading || loading}>
-              {loading ? "Entrando…" : "Entrar"}
-            </Button>
-          </form>
-          <p className="mt-4 text-center text-sm text-muted-foreground">
-            Área restrita. Entre para acessar o dashboard.
-          </p>
-        </CardContent>
-      </Card>
+              >
+                {loading ? "Entrando…" : "Entrar"}
+              </Button>
+            </form>
+            <p className="mt-6 text-center text-sm text-muted-foreground">
+              Área restrita. Entre para acessar o dashboard.
+            </p>
+          </CardContent>
+        </Card>
+      </div>
     </div>
   );
 }

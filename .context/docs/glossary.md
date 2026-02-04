@@ -10,6 +10,8 @@ scaffoldVersion: "2.0.0"
 
 # Glossário — n.files (ness)
 
+O **n.files** é um sistema de **gestão de documentos** (ingestão, regras de renomeação, preview e file manager).
+
 ## Entidades de domínio
 
 | Termo | Descrição |
