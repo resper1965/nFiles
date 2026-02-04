@@ -1,0 +1,29 @@
+# Env e segredos
+.env
+.env.local
+.env.*.local
+
+# Arquivos grandes (GitHub limite 100 MB)
+*.zip
+*.zip:Zone.Identifier
+
+# Dependencies
+node_modules/
+
+# Build e cache
+.next/
+out/
+dist/
+*.tsbuildinfo
+
+# IDE e OS
+.idea/
+.vscode/
+*.swp
+.DS_Store
+
+# Logs
+*.log
+npm-debug.log*
+.vercel
+.env*.local

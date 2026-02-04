@@ -1,0 +1,59 @@
+{
+  "version": "1.0.0",
+  "generated": "2026-02-04T12:24:14.895Z",
+  "stack": {
+    "primaryLanguage": null,
+    "languages": [],
+    "frameworks": [],
+    "buildTools": [],
+    "testFrameworks": [],
+    "packageManager": null,
+    "isMonorepo": false,
+    "hasDocker": false,
+    "hasCI": false
+  },
+  "structure": {
+    "totalFiles": 2,
+    "topDirectories": [
+      {
+        "name": "Ingridion - Contrato e Aditivos.zip",
+        "fileCount": 1
+      },
+      {
+        "name": "Ingridion - Contrato e Aditivos.zip:Zone.Identifier",
+        "fileCount": 1
+      }
+    ],
+    "languageDistribution": [
+      {
+        "extension": ".identifier",
+        "count": 1
+      },
+      {
+        "extension": ".zip",
+        "count": 1
+      }
+    ]
+  },
+  "architecture": {
+    "layers": [],
+    "patterns": [],
+    "entryPoints": []
+  },
+  "symbols": {
+    "classes": [],
+    "interfaces": [],
+    "functions": [],
+    "types": [],
+    "enums": []
+  },
+  "publicAPI": [],
+  "dependencies": {
+    "mostImported": []
+  },
+  "stats": {
+    "totalSymbols": 0,
+    "exportedSymbols": 0,
+    "analysisTimeMs": 8
+  }
+}
