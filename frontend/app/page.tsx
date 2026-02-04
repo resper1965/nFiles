@@ -7,8 +7,8 @@ export default function Home() {
     <div className="flex min-h-screen flex-col">
       <header className="border-b px-4 py-3">
         <div className="mx-auto flex max-w-4xl items-center justify-between">
-          <span className="font-semibold text-foreground">n.files</span>
-          <span className="text-xs text-muted-foreground">ness</span>
+          <span className="font-semibold text-foreground">ness</span>
+          <span className="text-xs text-muted-foreground">n.files</span>
           <Button variant="ghost" size="sm" asChild>
             <Link href="/login">Entrar</Link>
           </Button>
@@ -16,7 +16,7 @@ export default function Home() {
       </header>
       <main className="flex flex-1 flex-col items-center justify-center gap-8 p-8">
         <div className="text-center space-y-3">
-          <h1 className="text-4xl font-bold tracking-tight">n.files</h1>
+          <h1 className="text-4xl font-bold tracking-tight">ness</h1>
           <p className="text-muted-foreground max-w-md mx-auto">
             Sistema de renomeação de arquivos com ingestão, padrões de nomenclatura e file manager no Storage.
           </p>

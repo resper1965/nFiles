@@ -4,6 +4,7 @@ Welcome to the repository knowledge base. Start with the project overview, then 
 
 ## Core Guides
 - [Project Overview](./project-overview.md)
+- [**Dinâmica da aplicação**](./dinamica-da-aplicacao.md) — Como a aplicação funciona: páginas, fluxo (ingestão → regras → preview → renomear) e onde os dados ficam.
 - [Architecture Notes](./architecture.md)
 - [Development Workflow](./development-workflow.md)
 - [Testing Strategy](./testing-strategy.md)
@@ -24,6 +25,7 @@ Welcome to the repository knowledge base. Start with the project overview, then 
 | Guide | File | Primary Inputs |
 | --- | --- | --- |
 | Project Overview | `project-overview.md` | Roadmap, README, stakeholder notes |
+| Dinâmica da aplicação | `dinamica-da-aplicacao.md` | Fluxo do usuário, File manager, ingestão, regras, preview, renomear |
 | Architecture Notes | `architecture.md` | ADRs, service boundaries, dependency graphs |
 | Development Workflow | `development-workflow.md` | Branching rules, CI config, contributing guide |
 | Testing Strategy | `testing-strategy.md` | Test configs, CI gates, known flaky suites |

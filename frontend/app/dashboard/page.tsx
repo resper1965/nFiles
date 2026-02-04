@@ -9,7 +9,7 @@ export default function DashboardPage() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
         <p className="text-muted-foreground">
-          n.files — sistema de renomeação de arquivos (ness).
+          ness — sistema de renomeação de arquivos (n.files).
         </p>
       </div>
       <div className="grid gap-4 md:grid-cols-2">

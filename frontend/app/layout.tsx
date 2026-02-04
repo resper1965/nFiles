@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "n.files — ness",
-  description: "Sistema de renomeação de arquivos com ingestão, regras e file manager.",
+  title: "ness",
+  description: "Sistema de renomeação de arquivos com ingestão, regras e file manager (n.files).",
 };
 
 export default function RootLayout({

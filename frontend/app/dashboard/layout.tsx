@@ -29,9 +29,9 @@ export default function DashboardLayout({
       <Sidebar>
         <SidebarHeader className="border-b border-sidebar-border px-4 py-3">
           <Link href="/dashboard" className="font-semibold text-sidebar-foreground">
-            n.files
+            ness
           </Link>
-          <span className="text-muted-foreground text-xs block">ness</span>
+          <span className="text-muted-foreground text-xs block">n.files</span>
           {!loading && (
             <div className="mt-2 flex flex-col gap-1">
               {user ? (

@@ -17,6 +17,17 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  function authErrorMessage(err: Error | null): string {
+    if (!err) return "Erro ao entrar.";
+    const msg = err.message;
+    if (msg.includes("Supabase não configurado") || msg.includes("NEXT_PUBLIC_SUPABASE"))
+      return "Autenticação não configurada. Configure NEXT_PUBLIC_SUPABASE_URL e a chave no .env.local ou na Vercel.";
+    if (msg.includes("Invalid login credentials") || msg.includes("invalid_credentials"))
+      return "Email ou senha incorretos.";
+    if (msg.includes("Email not confirmed")) return "Confirme seu email antes de entrar.";
+    return msg;
+  }
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
@@ -24,7 +35,7 @@ export default function LoginPage() {
     const { error: err } = await signIn(email, password);
     setLoading(false);
     if (err) {
-      setError(err.message ?? "Erro ao entrar.");
+      setError(authErrorMessage(err));
       return;
     }
     router.push("/dashboard");
@@ -35,7 +46,7 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader>
-          <CardTitle>n.files</CardTitle>
+          <CardTitle>ness</CardTitle>
           <CardDescription>Entre com email e senha para acessar o file manager.</CardDescription>
         </CardHeader>
         <CardContent>

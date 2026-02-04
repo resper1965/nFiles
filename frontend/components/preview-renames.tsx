@@ -5,7 +5,7 @@ import { resolveNameConflicts } from "@/lib/patterns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { List, Plus, Trash2, Loader2, CheckCircle, AlertCircle, FolderInput } from "lucide-react";
+import { List, Plus, Trash2, Loader2, CheckCircle, AlertCircle, FolderInput, Package } from "lucide-react";
 
 export type PreviewItem = { from: string; to: string };
 
@@ -52,6 +52,7 @@ export function PreviewRenames({
   const [applying, setApplying] = useState(false);
   const [applyError, setApplyError] = useState<string | null>(null);
   const [applySuccess, setApplySuccess] = useState(false);
+  const [seedLoading, setSeedLoading] = useState(false);
 
   const apply = applyTemplate ?? applySeedTemplate;
 
@@ -93,9 +94,9 @@ export function PreviewRenames({
     updateList(next);
   };
 
-  const handleUseStorageFiles = () => {
+  const addNamesToList = (names: string[]) => {
     const currentFrom = new Set(list.map((i) => i.from));
-    const toAdd = storageFileNames.filter((n) => n.trim() && !currentFrom.has(n.trim()));
+    const toAdd = names.filter((n) => n.trim() && !currentFrom.has(n.trim()));
     if (toAdd.length === 0) return;
     const newItems = toAdd.map((name, i) => {
       const n = name.trim();
@@ -108,6 +109,23 @@ export function PreviewRenames({
       ...newItems.map((item, i) => ({ ...item, to: uniqueToNames[list.length + i] })),
     ];
     updateList(next);
+  };
+
+  const handleUseStorageFiles = () => {
+    addNamesToList(storageFileNames);
+  };
+
+  const handleUseSeedRepositorio = async () => {
+    setSeedLoading(true);
+    try {
+      const r = await fetch("/seed-files.json");
+      if (!r.ok) return;
+      const data = (await r.json()) as { files?: string[] };
+      const names = data.files ?? [];
+      addNamesToList(names);
+    } finally {
+      setSeedLoading(false);
+    }
   };
 
   const handleApplyRenames = async () => {
@@ -151,6 +169,20 @@ export function PreviewRenames({
           </Button>
         </div>
         <div className="flex flex-wrap items-center gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={handleUseSeedRepositorio}
+            disabled={seedLoading}
+          >
+            {seedLoading ? (
+              <Loader2 className="size-4 animate-spin" />
+            ) : (
+              <Package className="size-4" />
+            )}
+            Usar seed do repositório
+          </Button>
           {storageFileNames.length > 0 && (
             <Button
               type="button"
