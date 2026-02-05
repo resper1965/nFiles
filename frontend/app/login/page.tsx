@@ -66,7 +66,7 @@ export default function LoginPage() {
             <NessBrand textClassName="text-foreground" className="text-3xl" />
           </CardTitle>
           <CardDescription className="mt-2 text-sm">
-            Entre com email e senha para acessar o dashboard (n.files).
+            Entre com email e senha para acessar o n.Files (desenvolvido pela ness).
           </CardDescription>
         </div>
 

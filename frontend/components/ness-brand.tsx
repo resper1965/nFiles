@@ -22,7 +22,7 @@ export function NessBrand({
 }
 
 /**
- * Marca "n.files" — mesma lógica: Montserrat Medium; "n" e "files" na cor do texto; "." em #00ade8.
+ * Marca "n.Files" — mesma lógica: Montserrat Medium; "n" e "Files" na cor do texto; "." em #00ade8.
  */
 export function NFilesBrand({
   className = "",
@@ -36,7 +36,7 @@ export function NFilesBrand({
     <span className={`font-montserrat font-medium ${className}`}>
       <span className={textClassName}>n</span>
       {dot}
-      <span className={textClassName}>files</span>
+      <span className={textClassName}>Files</span>
     </span>
   );
 }

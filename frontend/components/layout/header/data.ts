@@ -1,8 +1,8 @@
 export const notifications = [
   {
     id: 1,
-    title: "n.files",
-    desc: "Sistema de gestão de documentos.",
+    title: "n.Files",
+    desc: "Gestão de documentos. Desenvolvido pela ness.",
     type: "text",
     date: "Agora",
   },

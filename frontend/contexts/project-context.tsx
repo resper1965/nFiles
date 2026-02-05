@@ -10,8 +10,17 @@ import {
 } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { createProject as createProjectStorage, listProjectNames } from "@/lib/storage";
+import { getSupabaseBrowser } from "@/lib/supabase-browser";
 
 const STORAGE_KEY = "nfiles-current-project";
+
+/** Retorna o access_token atual do cliente Supabase (localStorage). Usar nas chamadas à API. */
+async function getAccessToken(): Promise<string | null> {
+  const supabase = getSupabaseBrowser();
+  if (!supabase) return null;
+  const { data: { session } } = await supabase.auth.getSession();
+  return session?.access_token ?? null;
+}
 
 /** Parâmetros para criação de projeto com razão social e operadora (metadados + inferência). */
 export type CreateProjectParams = {
@@ -120,9 +129,13 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
       if (params) {
         try {
+          const token = await getAccessToken();
           const res = await fetch("/api/projects", {
             method: "POST",
-            headers: { "Content-Type": "application/json" },
+            headers: {
+              "Content-Type": "application/json",
+              ...(token && { Authorization: `Bearer ${token}` }),
+            },
             body: JSON.stringify({
               name,
               razao_social: params.razao_social,
@@ -152,7 +165,11 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     async (projectName: string): Promise<CreateProjectParams | null> => {
       if (!projectName?.trim()) return null;
       try {
-        const res = await fetch(`/api/projects?name=${encodeURIComponent(projectName.trim())}`, { credentials: "include" });
+        const token = await getAccessToken();
+        const res = await fetch(`/api/projects?name=${encodeURIComponent(projectName.trim())}`, {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          credentials: "include",
+        });
         const data = await res.json().catch(() => null);
         if (!res.ok || data == null) return null;
         return {
@@ -183,9 +200,13 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       if (params.tipo_documento !== undefined) body.tipo_documento = String(params.tipo_documento).trim() || null;
       if (params.objeto_documento !== undefined) body.objeto_documento = String(params.objeto_documento).trim() || null;
       try {
+        const token = await getAccessToken();
         const res = await fetch("/api/projects", {
           method: "PATCH",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            ...(token && { Authorization: `Bearer ${token}` }),
+          },
           body: JSON.stringify(body),
           credentials: "include",
         });
@@ -209,8 +230,10 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       }
       const name = projectName.trim();
       try {
+        const token = await getAccessToken();
         const res = await fetch(`/api/projects?name=${encodeURIComponent(name)}`, {
           method: "DELETE",
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
           credentials: "include",
         });
         const data = await res.json().catch(() => ({}));

@@ -1,6 +1,6 @@
-# Frontend — n.files (ness)
+# Frontend — n.Files (ness)
 
-Interface do usuário do sistema de **gestão de documentos** **n.files**.
+Interface do usuário do sistema de **gestão de documentos** **n.Files**.
 
 ## Stack
 

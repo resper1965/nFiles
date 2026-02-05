@@ -23,8 +23,26 @@ export function isValidProjectRelativePath(relativePath: string): boolean {
 
 export type GetUserIdResult = { userId: string } | { error: string; status: number };
 
+async function getUserIdFromAccessToken(accessToken: string): Promise<string | null> {
+  try {
+    const { createClient } = await import("@supabase/supabase-js");
+    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const anon = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    if (!url || !anon) return null;
+    const client = createClient(url, anon);
+    const { data: { session }, error } = await client.auth.setSession({
+      access_token: accessToken,
+      refresh_token: "",
+    });
+    if (!error && session?.user?.id) return session.user.id;
+  } catch {
+    // ignore
+  }
+  return null;
+}
+
 /**
- * Obtém userId a partir de cookies (createSupabaseServerClient) ou de accessToken no body.
+ * Obtém userId a partir de: cookies (createSupabaseServerClient), header Authorization: Bearer, ou body.accessToken.
  * Usar em API routes que precisam de usuário autenticado.
  */
 export async function getUserIdFromRequest(request: NextRequest, body: { accessToken?: string }): Promise<GetUserIdResult> {
@@ -37,22 +55,12 @@ export async function getUserIdFromRequest(request: NextRequest, body: { accessT
     // cookies/session não disponíveis
   }
 
+  if (!userId) {
+    const bearer = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim();
+    if (bearer) userId = await getUserIdFromAccessToken(bearer);
+  }
   if (!userId && body?.accessToken && typeof body.accessToken === "string") {
-    try {
-      const { createClient } = await import("@supabase/supabase-js");
-      const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-      const anon = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY ?? process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-      if (url && anon) {
-        const client = createClient(url, anon);
-        const { data: { session }, error } = await client.auth.setSession({
-          access_token: body.accessToken,
-          refresh_token: "",
-        });
-        if (!error && session?.user?.id) userId = session.user.id;
-      }
-    } catch {
-      // ignore
-    }
+    userId = await getUserIdFromAccessToken(body.accessToken);
   }
 
   if (!userId) {
