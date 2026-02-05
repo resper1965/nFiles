@@ -188,7 +188,7 @@ export function PreviewRenames({
           Preview
         </CardTitle>
         <CardDescription>
-          Nome atual → nome novo. Adicione arquivos e gere o preview com o padrão escolhido nas Regras.
+          Lista nome atual → nome novo (só visualização). Use &quot;Usar arquivos do Storage&quot; ou digite nomes; &quot;Gerar preview&quot; aplica o padrão das Regras. <strong>Nenhum arquivo é renomeado no Storage até você clicar no botão &quot;Renomear&quot;</strong>.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

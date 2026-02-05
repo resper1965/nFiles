@@ -43,13 +43,13 @@ A **Ingestão** (`/dashboard/ingestao`) é a tela para enviar arquivos ao Storag
 
 ### 3.2 Regras (na tela File system)
 
-- **O que é:** a **regra** que define como cada nome atual vira um **nome novo** (ex.: colocar data no início, usar um template com operadora e tipo de documento, etc.).
+- **O que é:** a **regra** define o **padrão da nomenclatura** (como cada nome atual vira um nome novo). O que importa aqui é **qual padrão** está escolhido (ex.: Seed completo). Razão e operadora vêm do **projeto** (já preenchidos); tipo e objeto ficam em branco por documento para cada arquivo poder variar.
 - **O que o usuário faz:**
   - Escolhe um **padrão** no dropdown (ex.: **Seed simples**, **Seed completo**, **Data no início**, **Slug**, ou um padrão **customizado**).
-  - Se escolher **Seed completo**, pode preencher opcionalmente: Operadora, Tipo doc, Descrição (esses valores entram no nome novo).
+  - Se escolher **Seed completo**, pode ajustar opcionalmente: Razão e Operadora (vêm do projeto), Tipo doc e Objeto (em branco por documento; preencha só se quiser o mesmo para todos).
   - Pode criar **Nova regra**: nome do padrão + template com `{nome}`, `{data}`, `{indice}` (regras custom ficam salvas no navegador, em `localStorage`).
   - Pode usar **Sugerir nome com IA**: opcionalmente informar nome atual; a API pode receber também **metadados** e **trecho de conteúdo** (via extração em `POST /api/content/extract`) para sugerir um nome mais adequado.
-- **Resultado:** o sistema sabe **como** transformar cada “nome atual” em “nome novo”. Nada é renomeado ainda; isso só acontece no passo 5.
+- **Resultado:** o sistema sabe **como** transformar cada “nome atual” em “nome novo”. Nada é renomeado ainda; isso só acontece quando o usuário clica em **Renomear** (ver 3.5).
 
 ### 3.3 Árvore (na tela File system)
 
@@ -59,7 +59,7 @@ A **Ingestão** (`/dashboard/ingestao`) é a tela para enviar arquivos ao Storag
 
 ### 3.4 Preview (nome atual → nome novo, na tela File system)
 
-- **O que é:** uma **tabela** que mostra, para cada arquivo, o **nome atual** e o **nome novo** que a regra escolhida geraria.
+- **O que é:** o **Preview** é a **tabela** que mostra, para cada arquivo, o **nome atual** e o **nome novo** que a regra geraria. É só **visualização**: nenhum arquivo no Storage é alterado até você clicar no botão **Renomear** (ou **Copiar com nome correto**).
 - **O que o usuário faz:**
   - Preenche a lista do preview usando **“Usar arquivos do Storage”**, **“Usar seleção no preview”** (itens marcados na Árvore), **“Usar seed do repositório”** ou adicionando nomes manualmente.
   - Ajusta a **regra** (padrão ou campos do Seed completo) e vê a tabela atualizar na hora.
@@ -99,10 +99,17 @@ A **Ingestão** (`/dashboard/ingestao`) é a tela para enviar arquivos ao Storag
 
 ## 5. Projeto (nome = pasta raiz)
 
-O usuário **dá um nome ao projeto**; esse nome é o **nome da pasta raiz** no Storage (ex.: `userId/Contrato-2025/`). Assim é possível **manter vários projetos** por usuário. Na sidebar do dashboard:
+O usuário **dá um nome ao projeto**; esse nome é o **nome da pasta raiz** no Storage (ex.: `userId/Contrato-2025/`). Assim é possível **manter vários projetos** por usuário.
+
+### 5.1 Estrutura de pastas
+
+- **Pasta principal:** o nome da pasta principal no Storage é **sempre o nome do projeto** (ex.: `userId/NomeDoProjeto/`).
+- **Subpasta:** dentro do projeto, a subpasta pode ser razão+operadora (ex.: na ingestão, `NomeDoProjeto/Razao-Operadora/`).
+
+### 5.2 Na sidebar do dashboard (passos)
 
 - **Seletor de projeto:** dropdown com os projetos (pastas raiz) do usuário; opção “— Sem projeto —” usa o path legado `userId/`.
-- **Criar projeto:** campo “Novo projeto” + botão; cria a pasta no Storage (arquivo `.keep`) e seleciona o projeto. Ingestão e File system passam a atuar **no projeto selecionado**.
+- **Criar projeto:** campo “Novo projeto” + botão; Razão social + Operadora (obrigatórios); nome da pasta opcional. Pasta principal = nome do projeto; subpasta pode ser razão+operadora. Tipo e objeto não são do projeto. Regras: razão e operadora vêm do projeto; tipo e objeto em branco para cada documento poder variar. Preview: os arquivos só são renomeados no Storage quando você clica no botão **Renomear** (na tela File system / Projetos).
 
 ## 6. Onde os dados ficam
 

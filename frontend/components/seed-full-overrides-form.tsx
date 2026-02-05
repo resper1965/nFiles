@@ -27,7 +27,7 @@ export function SeedFullOverridesForm({
   return (
     <div className={cn("space-y-3 rounded-md border border-border bg-muted/20 p-3", className)}>
       <p className="text-xs font-medium text-muted-foreground">
-        Índice: Razão social do cliente | Nome da operadora | Tipo de documento | Objeto do documento | Data de emissão. Preencha (opcional); data de emissão é preenchida automaticamente.
+        Aqui o que importa é o <strong>padrão da nomenclatura</strong> (ex.: Razão | Operadora | Tipo | Objeto | Data). Razão e operadora vêm do projeto (card acima); tipo e objeto deixe em branco para cada arquivo poder ter valor diferente — ou preencha para aplicar a todos. Data é preenchida automaticamente.
       </p>
       <div className="grid gap-2 sm:grid-cols-2">
         <div className="space-y-1.5">

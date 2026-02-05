@@ -11,7 +11,7 @@ import { Label } from "@/components/ui/label";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { signIn, user, loading: authLoading } = useAuth();
+  const { signIn, user, loading: authLoading, refreshSession } = useAuth();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -39,13 +39,15 @@ export default function LoginPage() {
     setError(null);
     setLoading(true);
     const { error: err } = await signIn(email, password);
-    setLoading(false);
     if (err) {
+      setLoading(false);
       setError(authErrorMessage(err));
       return;
     }
-    router.push("/dashboard");
-    router.refresh();
+    // Atualiza a sessão no contexto antes de redirecionar para evitar loop (dashboard ver user null e mandar de volta)
+    await refreshSession();
+    setLoading(false);
+    router.replace("/dashboard");
   }
 
   if (user) {

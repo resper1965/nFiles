@@ -34,10 +34,7 @@ export default function ProjetosPage() {
   const [newRuleOpen, setNewRuleOpen] = useState(false);
   const [newProjectRazao, setNewProjectRazao] = useState("");
   const [newProjectOperadora, setNewProjectOperadora] = useState("");
-  const [newProjectTipo, setNewProjectTipo] = useState("");
-  const [newProjectObjeto, setNewProjectObjeto] = useState("");
   const [newProjectName, setNewProjectName] = useState("");
-  const [inferring, setInferring] = useState(false);
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
   const [postBatchOpen, setPostBatchOpen] = useState(false);
@@ -74,8 +71,7 @@ export default function ProjetosPage() {
           ...prev,
           razao: meta.razao_social || prev.razao,
           operadora: meta.operadora || prev.operadora,
-          tipoDoc: meta.tipo_documento || prev.tipoDoc,
-          descricao: meta.objeto_documento || prev.descricao,
+          // tipo e objeto não vêm do projeto: cada documento pode ter valor diferente
         }));
       }
     });
@@ -91,33 +87,6 @@ export default function ProjetosPage() {
     return patterns.find((p) => p.id === selectedPatternId)?.apply;
   }, [selectedPatternId, patternOverrides, patterns]);
 
-  const handleInfer = async () => {
-    const razao = newProjectRazao.trim();
-    const operadora = newProjectOperadora.trim();
-    if (!razao || !operadora) return;
-    setInferring(true);
-    setCreateError(null);
-    try {
-      const res = await fetch("/api/projects/infer", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ razao_social: razao, operadora }),
-        credentials: "include",
-      });
-      const data = await res.json().catch(() => ({}));
-      if (res.ok && data.tipo_documento != null) {
-        setNewProjectTipo(data.tipo_documento);
-        setNewProjectObjeto(data.objeto_documento ?? "");
-      } else {
-        setCreateError(typeof data.error === "string" ? data.error : "Erro ao sugerir com IA.");
-      }
-    } catch {
-      setCreateError("Erro ao sugerir com IA.");
-    } finally {
-      setInferring(false);
-    }
-  };
-
   const handleCreateProject = async () => {
     const razao = newProjectRazao.trim();
     const operadora = newProjectOperadora.trim();
@@ -131,16 +100,13 @@ export default function ProjetosPage() {
       name: newProjectName.trim() || undefined,
       razao_social: razao,
       operadora,
-      tipo_documento: newProjectTipo.trim() || undefined,
-      objeto_documento: newProjectObjeto.trim() || undefined,
+      // tipo e objeto não no projeto: cada documento pode ter valor diferente
     });
     setCreating(false);
     if (error) setCreateError(error.message);
     else {
       setNewProjectRazao("");
       setNewProjectOperadora("");
-      setNewProjectTipo("");
-      setNewProjectObjeto("");
       setNewProjectName("");
     }
   };
@@ -266,6 +232,9 @@ export default function ProjetosPage() {
                   </select>
                 </div>
                 <div className="flex flex-col gap-3">
+                <p className="text-xs text-muted-foreground">
+                  Pasta principal = nome do projeto. Subpasta pode ser razão+operadora (na ingestão).
+                </p>
                 <div className="grid gap-2 sm:grid-cols-2">
                   <div className="space-y-1.5">
                     <Label htmlFor="novo-razao" className="text-xs">Razão social do cliente *</Label>
@@ -288,44 +257,11 @@ export default function ProjetosPage() {
                     />
                   </div>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="outline"
-                    onClick={handleInfer}
-                    disabled={inferring || !newProjectRazao.trim() || !newProjectOperadora.trim()}
-                  >
-                    {inferring ? "Sugerindo…" : "Sugerir com IA"}
-                  </Button>
-                </div>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <div className="space-y-1.5">
-                    <Label htmlFor="novo-tipo" className="text-xs">Tipo de documento</Label>
-                    <Input
-                      id="novo-tipo"
-                      placeholder="Ex.: CONTRATO, TERMO DE ADITAMENTO"
-                      className="h-9"
-                      value={newProjectTipo}
-                      onChange={(e) => setNewProjectTipo(e.target.value)}
-                    />
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="novo-objeto" className="text-xs">Objeto do documento</Label>
-                    <Input
-                      id="novo-objeto"
-                      placeholder="Ex.: RENOVAÇÃO, REAJUSTE"
-                      className="h-9"
-                      value={newProjectObjeto}
-                      onChange={(e) => setNewProjectObjeto(e.target.value)}
-                    />
-                  </div>
-                </div>
                 <div className="space-y-1.5">
-                  <Label htmlFor="novo-projeto" className="text-xs">Nome da pasta (opcional)</Label>
+                  <Label htmlFor="novo-projeto" className="text-xs">Nome da pasta do projeto (opcional)</Label>
                   <Input
                     id="novo-projeto"
-                    placeholder="Deixe em branco para derivar de razão + operadora"
+                    placeholder="Deixe em branco = nome derivado de razão + operadora"
                     className="h-9"
                     value={newProjectName}
                     onChange={(e) => setNewProjectName(e.target.value)}
