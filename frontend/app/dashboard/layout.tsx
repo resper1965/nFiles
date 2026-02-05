@@ -7,6 +7,7 @@ import { SiteHeader } from "@/components/layout/header";
 import { AppSidebar } from "@/components/layout/sidebar/app-sidebar";
 import { useAuth } from "@/contexts/auth-context";
 import { ProjectProvider } from "@/contexts/project-context";
+import { RulesProvider } from "@/contexts/rules-context";
 
 export default function DashboardLayout({
   children,
@@ -43,6 +44,7 @@ export default function DashboardLayout({
 
   return (
     <ProjectProvider>
+      <RulesProvider>
       <SidebarProvider style={sidebarStyle}>
         <AppSidebar user={user} signOut={signOut} />
         <SidebarInset>
@@ -54,6 +56,7 @@ export default function DashboardLayout({
           </div>
         </SidebarInset>
       </SidebarProvider>
+      </RulesProvider>
     </ProjectProvider>
   );
 }

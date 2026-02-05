@@ -75,7 +75,7 @@ export default function DashboardPage() {
               Projetos
             </CardTitle>
             <CardDescription>
-              Crie e gerencie projetos. Regras de renomeação, preview e aplicação no Storage.
+              Crie e gerencie projetos e defina as regras de renomeação. A renomeação dos arquivos ocorre na Ingestão.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -91,7 +91,7 @@ export default function DashboardPage() {
               Ingestão
             </CardTitle>
             <CardDescription>
-              Envie arquivos em lote ou um por vez para o Storage.
+              Envie arquivos e renomeie conforme as regras do projeto. O processo de renomeação dos arquivos ocorre aqui.
             </CardDescription>
           </CardHeader>
           <CardContent>

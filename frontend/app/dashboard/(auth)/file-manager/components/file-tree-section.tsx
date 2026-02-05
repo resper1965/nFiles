@@ -34,7 +34,7 @@ export function FileTreeSection() {
         </CardTitle>
         <CardDescription>
           {currentProject
-            ? `Projeto: ${currentProject}. Expanda pastas para ver a estrutura; marque arquivos para usar no preview de renomeação.`
+            ? `Projeto: ${currentProject}. Expanda pastas para ver a estrutura; marque arquivos para ver a estrutura.`
             : "Selecione um projeto para ver a estrutura de arquivos (árvore)."}
         </CardDescription>
       </CardHeader>

@@ -14,7 +14,7 @@ export default function FileManagerPage() {
             File system
           </h1>
           <p className="text-muted-foreground text-sm">
-            Estrutura de arquivos do projeto: árvore de pastas e arquivos. Selecione o projeto e expanda as pastas para ver o conteúdo. Use Projetos para regras, preview e renomeação.
+            Estrutura de arquivos do projeto: árvore de pastas e arquivos. Selecione o projeto e expanda as pastas para ver o conteúdo. Use Projetos para regras.
           </p>
         </div>
         <FileUploadLink />

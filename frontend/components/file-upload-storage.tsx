@@ -7,6 +7,7 @@ import FileUpload, {
   type FileMetadata,
   type FileWithPreview,
 } from "@/components/ui/file-upload";
+import { IngestionRenameSection } from "@/components/ingestion-rename-section";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Upload } from "lucide-react";
 import {
@@ -134,7 +135,7 @@ export function FileUploadStorage() {
           Estrutura de arquivos
         </CardTitle>
         <CardDescription>
-          Lista e grade dos arquivos no Storage do projeto. Arraste ou adicione arquivos para enviar. Abra ou baixe com os botões na linha.
+          Lista e grade dos arquivos no Storage do projeto. Arraste ou adicione arquivos para enviar; a renomeação dos arquivos (conforme as regras de Projetos) é feita aqui. Abra ou baixe com os botões na linha.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -156,6 +157,13 @@ export function FileUploadStorage() {
               initialFiles={initialFiles}
               onFilesAdded={handleFilesAdded}
               onGetFileUrl={handleGetFileUrl}
+            />
+            <IngestionRenameSection
+              files={initialFiles}
+              onRenamed={() => {
+                loadFiles();
+                setUploadKey((k) => k + 1);
+              }}
             />
           </>
         )}

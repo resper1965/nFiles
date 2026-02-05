@@ -17,7 +17,7 @@ export default function IngestaoPage() {
         <div>
           <h1 className="text-xl font-bold tracking-tight lg:text-2xl">Ingestão</h1>
           <p className="text-muted-foreground text-sm">
-            Envie arquivos em lote ou um por vez para o Storage. Selecione o projeto abaixo. Use Projetos para regras e renomeação.
+            Envie arquivos em lote ou um por vez para o Storage. O processo de renomeação dos arquivos ocorre aqui na Ingestão (aplique o padrão definido em Projetos).
           </p>
         </div>
       </div>

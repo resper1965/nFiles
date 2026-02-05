@@ -666,7 +666,7 @@ export default function FileUpload({
   };
 
   return (
-    <div className="flex max-w-4xl flex-col gap-3 mx-auto">
+    <div className="flex max-w-4xl flex-col gap-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <div className="flex items-center gap-3">
           <h3 className="text-sm font-medium">
@@ -1096,7 +1096,7 @@ export default function FileUpload({
           )}
         </>
       ) : (
-        <p className="text-muted-foreground text-center text-sm">
+        <p className="text-muted-foreground text-left text-sm">
           {files.length === 0
             ? "Nenhum arquivo ainda. Adicione ou solte arquivos acima."
             : "Nenhum arquivo corresponde à busca."}
