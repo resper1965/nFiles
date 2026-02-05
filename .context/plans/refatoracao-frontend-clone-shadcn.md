@@ -52,7 +52,25 @@ Fonte: [resper1965/clone](https://github.com/resper1965/clone).
 - **hooks/**, **lib/** — utilitários e hooks do clone.
 - **middleware.ts** — possível proteção de rotas (comparar com auth do n.files).
 
+- **components/layout/** no clone: [`header/`](https://github.com/resper1965/clone/tree/main/components/layout/header) (index, search, notifications, theme-switch, user-menu, data), [`sidebar/`](https://github.com/resper1965/clone/tree/main/components/layout/sidebar) (app-sidebar, nav-main, nav-user), `logo.tsx`.
+
 O clone **inclui um file manager** em [`app/dashboard/(auth)/file-manager`](https://github.com/resper1965/clone/tree/main/app/dashboard/(auth)/file-manager): página com título "File Manager", `FileUploadDialog` no header, `SummaryCards`, grid com `FolderListCards` (2 col) + `StorageStatusCard` (1 col), e abaixo `ChartFileTransfer` + `TableRecentFiles`. Componentes em `file-manager/components/`: `chart-file-transfer.tsx`, `file-upload-dialog.tsx`, `folder-list-cards.tsx`, `storage status-card.tsx`, `summary-cards.tsx`, `table-recent-files.tsx`, `index.ts`. O n.files mantém suas APIs, auth Supabase e storage; a refatoração adota do clone **layout, estrutura da página e componentes do file-manager**, adaptando-os aos dados reais (projetos, FileTree, Supabase).
+
+## Status do layout (components/layout do clone)
+
+**O que já está aplicado no n.files:**
+
+- **Header:** Versão **simplificada** em `frontend/components/layout/header/index.tsx` — apenas botão de toggle da sidebar + título opcional. O clone tem header completo com Search, Notifications, ThemeSwitch, ThemeCustomizerPanel, UserMenu; esses **não** foram trazidos.
+- **Sidebar:** O n.files usa a **sidebar própria** (inline no `app/dashboard/layout.tsx`): `Sidebar`, `SidebarHeader` (NessBrand, NFilesBrand, email, Sair), `SidebarContent` (menu: Dashboard, Projetos, Ingestão, File system), `SidebarInset` (SiteHeader + conteúdo). O clone tem `components/layout/sidebar/` com AppSidebar, NavMain, NavUser, Logo, dropdown de projetos; esses **não** foram trazidos.
+- **Logo:** O n.files usa `NessBrand`/`NFilesBrand` em `ness-brand.tsx`; o clone tem `components/layout/logo.tsx` — **não** integrado.
+
+**O que falta para “toda aplicação” header/sidebar do clone:**
+
+- Trazer [`components/layout/sidebar/`](https://github.com/resper1965/clone/tree/main/components/layout) (app-sidebar, nav-main, nav-user) e adaptar: logo → NessBrand/NFilesBrand, menu → Dashboard/Projetos/Ingestão/File system, usuário/Sair; sem seletor de projeto na sidebar.
+- Trazer [`components/layout/header/`](https://github.com/resper1965/clone/tree/main/components/layout/header) completo (search, notifications, theme-switch, user-menu) e adaptar: user-menu com auth Supabase; opcional: theme-customizer, search.
+- Opcional: `components/layout/logo.tsx` do clone adaptado para ness./n.files.
+
+**Implementado (2026-02-04) — layout completo:** Sidebar com AppSidebar, NavMain (n.files), NavUser (Supabase); Logo (NessBrand/NFilesBrand); Header com ThemeSwitch (next-themes), Notifications, UserMenu (Supabase). Search e ThemeCustomizerPanel não incluídos.
 
 ## Mapeamento: clone → n.files
 
