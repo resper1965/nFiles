@@ -1,14 +1,14 @@
 {
   "active": [
     {
-      "slug": "refatoracao-frontend-clone-shadcn",
-      "path": "plans/refatoracao-frontend-clone-shadcn.md",
-      "title": "Refatoração do frontend n.files usando resper1965/clone (Shadcn UI Kit)",
-      "summary": "Refatorar o frontend do n.files (Ingridion) usando o repositório [resper1965/clone](https://github.com/resper1965/clone) como base de UI: adotar layout (header, sidebar), componentes e posições do clone; adaptar todas as telas (login, dashboard, ingestão, projetos, file manager) e integrar o file manager ao dashboard do clone.",
-      "linkedAt": "2026-02-04T23:20:49.495Z",
+      "slug": "recomendacoes-avaliacao-nfiles",
+      "path": "plans/recomendacoes-avaliacao-nfiles.md",
+      "title": "Recomendações da avaliação — n.files",
+      "summary": "Unificar FileManagerContent/FileTreeSection; alinhar documentação (Projetos = regras/preview/renomear, File system = árvore); deprecar FileManagerContent.",
+      "linkedAt": "2026-02-05T13:43:32.640Z",
       "status": "active"
     }
   ],
   "completed": [],
-  "primary": "refatoracao-frontend-clone-shadcn"
+  "primary": "recomendacoes-avaliacao-nfiles"
 }
