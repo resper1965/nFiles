@@ -60,7 +60,7 @@ Documento de avaliação do estado atual do projeto **Ingridion (n.files)** e da
   - Busca, ordenação (nome/tipo/tamanho), seleção múltipla, abrir/baixar (URL assinada sob demanda).
   - Após upload, lista é recarregada e o componente remonta com a nova lista.
 
-**Avaliação:** Boa experiência de “estrutura de arquivos” na ingestão (listagem rica + upload integrado). Atende à expectativa de ver a estrutura no fluxo de ingestão.
+**Avaliação:** Boa experiência de "estrutura de arquivos" na ingestão (listagem rica + upload integrado via **FileUploadStorage**). Atende à expectativa de ver a estrutura no fluxo de ingestão.
 
 ---
 
@@ -68,9 +68,9 @@ Documento de avaliação do estado atual do projeto **Ingridion (n.files)** e da
 
 - **Página atual:** `(auth)/file-manager/page.tsx` usa **FileTreeSection** (árvore), **StorageStatusCard**, **SummaryCards**, **FileUploadLink** (link para Ingestão).
 - **Árvore:** `FileTree` com listagem lazy por nível, expansão de pastas, seleção de arquivos/pasta para uso no preview de renomeação.
-- **Observação:** O componente **FileManagerContent** (`file-manager-content.tsx`), que foi atualizado com textos “estrutura de arquivos”, **não é usado** em nenhuma rota; a rota `/dashboard/file-manager` usa apenas `FileTreeSection`.
+- **Higienização (2026-02-05):** O componente **FileManagerContent** foi removido; os textos de "estrutura de arquivos" estão no card de **FileTreeSection**. A ingestão usa **FileUploadStorage** (o antigo **FileIngestion** foi removido).
 
-**Avaliação:** A **estrutura de arquivos** no File system é a **árvore** (FileTree), o que faz sentido. Há redundância: dois componentes (FileManagerContent e FileTreeSection) com propósito parecido; apenas um está em uso.
+**Avaliação:** A **estrutura de arquivos** no File system é a **árvore** (FileTree), o que faz sentido.
 
 ---
 
@@ -109,7 +109,7 @@ Documento de avaliação do estado atual do projeto **Ingridion (n.files)** e da
 
 ## 5. Gaps e inconsistências (atualizado após recomendações)
 
-1. **FileManagerContent:** Resolvido. As alterações de texto (“estrutura de arquivos”) estão em `file-manager-content.tsx`, que não é referenciado em nenhuma página. A rota File system usa `FileTreeSection`. Ou se passa a usar `FileManagerContent` na rota, ou se unifica/copia os textos para o card de `FileTreeSection` para evitar componente órfão.
+1. **FileManagerContent:** Resolvido. O componente foi **removido** na higienização do repositório; os textos de "estrutura de arquivos" estão no card de `FileTreeSection`. O antigo **FileIngestion** também foi removido (substituído por **FileUploadStorage**).
 2. **Duas entradas para “file structure”:** Ingestão = lista/grade (FileUploadStorage); File system = árvore (FileTreeSection). Isso é intencional (duas visões), mas pode gerar dúvida se “File system” deveria também ter lista/grade; a documentação já deixa claro que a estrutura no File system é a árvore.
 3. **Projetos vs File system na documentação:** O doc fala em “File system” para regras, preview e renomear; na app, isso está em **Projetos** (`/dashboard/projetos`). Vale alinhar a documentação à rota real (Projetos = regras + preview + renomear; File system = árvore).
 4. **Tamanho/tipo de arquivos do Storage:** `listFiles` / Storage não retornam tamanho/tipo; na lista da Ingestão (FileUploadStorage) esses campos vêm como 0 e tipo inferido por extensão. Para exibir tamanho real seria necessário metadata no Storage ou API que retorne isso.
@@ -118,7 +118,7 @@ Documento de avaliação do estado atual do projeto **Ingridion (n.files)** e da
 
 ## 6. Recomendações (aplicadas em 2026-02-05)
 
-1. **Unificar FileManagerContent/FileTreeSection:** Aplicado. Decidir entre (a) usar `FileManagerContent` na página `/dashboard/file-manager` no lugar (ou junto) de `FileTreeSection`, ou (b) remover/deprecar `FileManagerContent` e manter apenas `FileTreeSection`, copiando os textos de “estrutura de arquivos” para o card da árvore.
+1. **Unificar FileManagerContent/FileTreeSection:** Aplicado. **FileManagerContent** foi removido; apenas **FileTreeSection** permanece na página File system, com os textos de "estrutura de arquivos" no card da árvore.
 2. **Documentação:** Ajustar dinâmica-da-aplicacao.md (e referências) para indicar que **Regras, Preview e Renomear** ficam na página **Projetos** (`/dashboard/projetos`), e que **File system** (`/dashboard/file-manager`) é a **estrutura em árvore** e o link para ingestão.
 3. **Metadados de arquivo (opcional):** Se for importante mostrar tamanho/tipo reais na Ingestão, avaliar uso de metadados do Storage ou uma API que enriqueça a listagem.
 4. **Testes:** Manter e ampliar testes em `lib/` (patterns, custom-patterns-storage) e considerar testes de integração para fluxos críticos (upload → listagem, preview → renomear).
@@ -133,6 +133,6 @@ Documento de avaliação do estado atual do projeto **Ingridion (n.files)** e da
 | Clareza do fluxo | Alta | Projeto → Ingestão → File system (árvore) e Projetos (regras/preview/renomear) compreensíveis; doc e UI alinhados. |
 | Estrutura de arquivos | Alta | Ingestão: lista/grade (FileUploadStorage); File system: árvore (FileTreeSection). |
 | Código e stack | Alta | Next.js, TypeScript, Shadcn, contextos e APIs coerentes. |
-| Consistência de rotas/componentes | Média | FileManagerContent não usado; doc vs rotas (File system vs Projetos) precisam de pequeno alinhamento. |
+| Consistência de rotas/componentes | Alta | Higienização feita: componentes órfãos (FileManagerContent, FileIngestion) removidos; doc e rotas alinhados (Projetos = regras/preview/renomear, File system = árvore). |
 
-**Conclusão geral:** O projeto está **bem encaminhado** e a funcionalidade atende ao propósito. Os principais ajustes são de consistência (uso de FileManagerContent ou unificação de textos) e de documentação (onde ficam regras/preview/renomear vs árvore).
+**Conclusão geral:** O projeto está **bem encaminhado** e a funcionalidade atende ao propósito. Higienização do repositório (remover backup e componentes não utilizados) aplicada em 2026-02-05.
