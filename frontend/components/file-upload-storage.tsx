@@ -152,7 +152,7 @@ export function FileUploadStorage() {
             )}
             <FileUpload
               key={uploadKey}
-              maxFiles={50}
+              maxFiles={100}
               maxSize={50 * 1024 * 1024}
               initialFiles={initialFiles}
               onFilesAdded={handleFilesAdded}

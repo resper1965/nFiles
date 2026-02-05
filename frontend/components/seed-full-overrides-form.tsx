@@ -45,28 +45,9 @@ export function SeedFullOverridesForm({
           </p>
         </div>
       ) : (
-        <div className="grid gap-2 sm:grid-cols-2">
-          <div className="space-y-1.5">
-            <Label htmlFor="override-razao" className="text-xs">Razão social do cliente</Label>
-            <Input
-              id="override-razao"
-              placeholder="Ex.: INGREDION"
-              value={value.razao ?? ""}
-              onChange={(e) => update("razao", e.target.value)}
-              className="h-8 text-sm"
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="override-operadora" className="text-xs">Operadora</Label>
-            <Input
-              id="override-operadora"
-              placeholder="Ex.: UNIMED NACIONAL"
-              value={value.operadora ?? ""}
-              onChange={(e) => update("operadora", e.target.value)}
-              className="h-8 text-sm"
-            />
-          </div>
-        </div>
+        <p className="text-xs text-muted-foreground">
+          Selecione um projeto para que razão e operadora sejam usadas nas regras (definidas na criação do projeto).
+        </p>
       )}
       <div className="grid gap-2 sm:grid-cols-2">
         <div className="space-y-1.5">

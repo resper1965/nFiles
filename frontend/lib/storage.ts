@@ -5,6 +5,30 @@ import { getSupabaseBrowser } from "./supabase-browser";
 /** Nome do bucket de arquivos no Supabase Storage (configurar no dashboard). */
 export const FILES_BUCKET = "files";
 
+/**
+ * Caracteres que o Supabase Storage rejeita no object key (ex.: parênteses, colchetes).
+ * Sanitiza o nome do arquivo para evitar erro "Invalid key".
+ */
+const STORAGE_KEY_UNSAFE = /[<>:"/\\|?*()\[\]{}ºª]/g;
+
+/**
+ * Sanitiza um segmento do path (ex.: nome do arquivo) para uso no Storage.
+ * Substitui caracteres inválidos por underscore e preserva a extensão.
+ */
+export function sanitizeStorageKeySegment(name: string): string {
+  if (!name?.trim()) return "arquivo";
+  const ext = name.includes(".") ? name.slice(name.lastIndexOf(".")) : "";
+  const base = ext ? name.slice(0, -ext.length) : name;
+  const safe = base
+    .replace(STORAGE_KEY_UNSAFE, "_")
+    .replace(/\s+/g, " ")
+    .trim()
+    .replace(/\s/g, "_")
+    .replace(/_+/g, "_")
+    .slice(0, 200) || "arquivo";
+  return safe + ext;
+}
+
 export type StorageFile = {
   name: string;
   path: string;
@@ -175,7 +199,8 @@ export async function uploadFile(
   const supabase = getSupabaseBrowser();
   if (!supabase) return { path: "", error: new Error("Supabase não configurado.") };
   const base = projectName ? `${userId}/${projectName}` : userId;
-  const path = customPath ?? `${base}/${file.name}`;
+  const safeName = sanitizeStorageKeySegment(file.name);
+  const path = customPath ?? `${base}/${safeName}`;
   const { error } = await supabase.storage.from(FILES_BUCKET).upload(path, file, {
     upsert: true,
   });
