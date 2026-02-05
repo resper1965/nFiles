@@ -17,7 +17,7 @@ export function FileManagerContent() {
       <div>
         <h1 className="text-2xl font-bold tracking-tight">File system</h1>
         <p className="text-muted-foreground">
-          Árvore de documentos por projeto. Selecione o projeto e navegue pelas pastas e arquivos.
+          Estrutura de arquivos do projeto: árvore de pastas e arquivos. Selecione o projeto e expanda as pastas para ver o conteúdo.
         </p>
       </div>
 
@@ -25,12 +25,12 @@ export function FileManagerContent() {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FolderTree className="size-5" />
-            Árvore de documentos
+            Estrutura de arquivos (árvore)
           </CardTitle>
           <CardDescription>
             {currentProject
-              ? `Projeto: ${currentProject}. Navegue por pastas e selecione arquivos.`
-              : "Selecione um projeto para ver a árvore de documentos."}
+              ? `Projeto: ${currentProject}. Expanda pastas para ver a estrutura; marque arquivos para usar no preview de renomeação.`
+              : "Selecione um projeto para ver a estrutura de arquivos (árvore)."}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

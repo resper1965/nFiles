@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { FileIngestion } from "@/components/file-ingestion";
+import { FileUploadStorage } from "@/components/file-upload-storage";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -61,7 +61,7 @@ export default function IngestaoPage() {
         </CardContent>
       </Card>
 
-      <FileIngestion />
+      <FileUploadStorage />
     </div>
   );
 }
