@@ -12,14 +12,23 @@ export const FILES_BUCKET = "files";
 const STORAGE_KEY_UNSAFE = /[<>:"/\\|?*()\[\]{}ºª]/g;
 
 /**
+ * Normaliza acentos para ASCII (ex.: inclusão → inclusao) para evitar Invalid key no Storage.
+ */
+function normalizeToAscii(s: string): string {
+  return s
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "");
+}
+
+/**
  * Sanitiza um segmento do path (ex.: nome do arquivo) para uso no Storage.
- * Substitui caracteres inválidos por underscore e preserva a extensão.
+ * Substitui caracteres inválidos por underscore, normaliza acentos para ASCII e preserva a extensão.
  */
 export function sanitizeStorageKeySegment(name: string): string {
   if (!name?.trim()) return "arquivo";
   const ext = name.includes(".") ? name.slice(name.lastIndexOf(".")) : "";
   const base = ext ? name.slice(0, -ext.length) : name;
-  const safe = base
+  const safe = normalizeToAscii(base)
     .replace(STORAGE_KEY_UNSAFE, "_")
     .replace(/\s+/g, " ")
     .trim()
