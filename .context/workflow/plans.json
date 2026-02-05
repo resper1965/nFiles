@@ -7,6 +7,14 @@
       "summary": "Unificar FileManagerContent/FileTreeSection; alinhar documentação (Projetos = regras/preview/renomear, File system = árvore); deprecar FileManagerContent.",
       "linkedAt": "2026-02-05T13:43:32.640Z",
       "status": "active"
+    },
+    {
+      "slug": "resolver-auth-exclusao-projetos",
+      "path": "plans/resolver-auth-exclusao-projetos.md",
+      "title": "Resolver autenticação na exclusão de projetos (n.Files)",
+      "summary": "Corrigir erro \"Não autenticado\" ao excluir projeto na UI: API DELETE /api/projects não recebe sessão quando o cliente usa localStorage (Supabase browser client) e o servidor lê cookies.",
+      "linkedAt": "2026-02-05T21:55:13.919Z",
+      "status": "active"
     }
   ],
   "completed": [],
