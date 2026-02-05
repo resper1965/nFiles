@@ -21,9 +21,9 @@ export default function Logo() {
         <span className="text-sidebar-foreground font-montserrat text-xl font-medium">n</span>
       ) : (
         <>
-          <NessBrand textClassName="text-sidebar-foreground" className="text-2xl" />
-          <span className="text-muted-foreground mt-1 block text-base">
-            <NFilesBrand textClassName="text-muted-foreground" className="text-base" />
+          <NFilesBrand textClassName="text-sidebar-foreground" className="text-2xl" />
+          <span className="text-muted-foreground mt-1 block text-sm">
+            desenvolvido pela <NessBrand textClassName="text-muted-foreground" className="text-sm" />
           </span>
         </>
       )}

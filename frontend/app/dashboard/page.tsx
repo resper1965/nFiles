@@ -43,7 +43,7 @@ export default function DashboardPage() {
         <div>
           <h1 className="text-xl font-bold tracking-tight lg:text-2xl">Dashboard</h1>
           <p className="text-muted-foreground text-sm">
-            <NessBrand className="text-sm" /> — gestão de documentos (<NFilesBrand textClassName="text-muted-foreground" className="text-sm" />).
+            <NFilesBrand textClassName="text-muted-foreground" className="text-sm" /> — gestão de documentos. Desenvolvido pela <NessBrand textClassName="text-muted-foreground" className="text-sm" />
           </p>
         </div>
       </div>
