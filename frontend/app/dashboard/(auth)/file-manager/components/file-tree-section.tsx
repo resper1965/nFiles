@@ -29,13 +29,13 @@ export function FileTreeSection() {
         <CardTitle className="flex gap-2">
           <FolderTree className="size-4 text-yellow-600" />
           <span className="leading-none font-semibold tracking-tight">
-            Árvore de documentos
+            Estrutura de arquivos (árvore)
           </span>
         </CardTitle>
         <CardDescription>
           {currentProject
-            ? `Projeto: ${currentProject}. Navegue por pastas e selecione arquivos.`
-            : "Selecione um projeto para ver a árvore de documentos."}
+            ? `Projeto: ${currentProject}. Expanda pastas para ver a estrutura; marque arquivos para usar no preview de renomeação.`
+            : "Selecione um projeto para ver a estrutura de arquivos (árvore)."}
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">

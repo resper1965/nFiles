@@ -9,9 +9,14 @@ export default function FileManagerPage() {
   return (
     <div className="space-y-4">
       <div className="flex flex-row items-center justify-between">
-        <h1 className="text-xl font-bold tracking-tight lg:text-2xl">
-          File Manager
-        </h1>
+        <div>
+          <h1 className="text-xl font-bold tracking-tight lg:text-2xl">
+            File system
+          </h1>
+          <p className="text-muted-foreground text-sm">
+            Estrutura de arquivos do projeto: árvore de pastas e arquivos. Selecione o projeto e expanda as pastas para ver o conteúdo. Use Projetos para regras, preview e renomeação.
+          </p>
+        </div>
         <FileUploadLink />
       </div>
       <SummaryCards />

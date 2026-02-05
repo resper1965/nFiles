@@ -18,30 +18,32 @@ A **ness** é um sistema de **gestão de documentos**: você envia arquivos para
 |--------|------|---------------------------|
 | **Home** | `/` | Redireciona: se logado → `/dashboard`; se não → `/login`. |
 | **Login** | `/login` | Formulário de email e senha (Supabase Auth). Se já logado, redireciona para `/dashboard`. |
-| **Dashboard** | `/dashboard` | Resumo e cards para **Ingestão** e **File system**. Na lateral: **ness**, **Projeto** (seletor + criar novo), email, Sair e menu (Dashboard, Ingestão, File system). |
-| **Ingestão** | `/dashboard/ingestao` | Upload de arquivos (lote ou único) e listagem do que está no Storage **do projeto selecionado**. Escolhida pelo menu **Ingestão**. |
-| **File system** | `/dashboard/file-manager` | Regras, busca, preview nome atual → nome novo e botão **Renomear** no Storage **do projeto selecionado**. Escolhida pelo menu **File system**. |
+| **Dashboard** | `/dashboard` | Resumo e cards para **Projetos**, **Ingestão** e **File system**. Na lateral: **ness**, **Projeto** (seletor + criar novo), email, Sair e menu (Dashboard, Projetos, Ingestão, File system). |
+| **Projetos** | `/dashboard/projetos` | Criar projeto (razão social + operadora), **Regras**, **Preview** (nome atual → nome novo) e botão **Renomear** / **Copiar com nome correto** no Storage. Escolhida pelo menu **Projetos**. |
+| **Ingestão** | `/dashboard/ingestao` | Upload de arquivos (lote ou único) e **estrutura de arquivos** (lista/grade) do Storage **do projeto selecionado**. Escolhida pelo menu **Ingestão**. |
+| **File system** | `/dashboard/file-manager` | **Estrutura de arquivos (árvore)** do projeto: pastas e arquivos; expandir pastas e marcar arquivos para usar no preview de renomeação (em Projetos). Link para Ingestão. Escolhida pelo menu **File system**. |
 
-Ou seja: o uso típico é **Login → Dashboard → Ingestão** (enviar arquivos) e **File system** (aplicar regras e renomear).
+Ou seja: o uso típico é **Login → Dashboard → Ingestão** (enviar arquivos e ver estrutura em lista/grade), **File system** (ver estrutura em árvore) e **Projetos** (regras, preview e renomear).
 
 ---
 
-## 3. Ingestão e File system (fluxo em duas telas)
+## 3. Ingestão, File system e Projetos (fluxo em três telas)
 
-A **Ingestão** (`/dashboard/ingestao`) é a tela para enviar arquivos ao Storage. O **File system** (`/dashboard/file-manager`) é a tela para regras, preview e renomear. O fluxo é:
+A **Ingestão** (`/dashboard/ingestao`) é a tela para enviar arquivos ao Storage e ver a **estrutura de arquivos** em lista/grade. O **File system** (`/dashboard/file-manager`) é a tela para ver a **estrutura de arquivos em árvore** (pastas e arquivos do projeto). A página **Projetos** (`/dashboard/projetos`) concentra **Regras**, **Preview** e **Renomear**. O fluxo é:
 
 ```
-[INGESTÃO]  →  enviar arquivos ao Storage
-[FILE SYSTEM]  →  [REGRAS]  →  [PREVIEW]  →  [RENOMEAR]
+[INGESTÃO]       →  enviar arquivos ao Storage e ver estrutura (lista/grade)
+[FILE SYSTEM]    →  ver estrutura de arquivos (árvore)
+[PROJETOS]       →  [REGRAS]  →  [PREVIEW]  →  [RENOMEAR]
 ```
 
 ### 3.1 Ingestão (tela escolhida no menu)
 
 - **O que é:** tela dedicada a **upload** e **listagem** do que está no **Supabase Storage** (bucket do usuário).
 - **O que o usuário faz:** faz **upload** de arquivos (um ou vários) para o Storage e vê a lista atualizada.
-- **Resultado:** os arquivos ficam no Storage. No **File system**, o botão **"Usar arquivos do Storage"** no preview usa essa mesma lista (carregada automaticamente no File system).
+- **Resultado:** os arquivos ficam no Storage. Na página **Projetos**, o botão **"Usar arquivos do Storage"** no preview usa essa mesma lista (carregada automaticamente em Projetos).
 
-### 3.2 Regras (na tela File system)
+### 3.2 Regras (na tela Projetos)
 
 - **O que é:** a **regra** define o **padrão da nomenclatura** (como cada nome atual vira um nome novo). O que importa aqui é **qual padrão** está escolhido (ex.: Seed completo). Razão e operadora vêm do **projeto** (já preenchidos); tipo e objeto ficam em branco por documento para cada arquivo poder variar.
 - **O que o usuário faz:**
@@ -55,9 +57,9 @@ A **Ingestão** (`/dashboard/ingestao`) é a tela para enviar arquivos ao Storag
 
 - **O que é:** um **card “Árvore”** que lista pastas e arquivos do **projeto selecionado** (um nível por vez ao expandir). Permite **selecionar** arquivos (checkbox) ou **Selecionar pasta** (todos os arquivos da pasta).
 - **O que o usuário faz:** expande pastas na árvore, marca checkboxes nos arquivos desejados ou clica em **Selecionar pasta** numa pasta. Depois usa **“Usar seleção no preview”** no card Preview para preencher a tabela só com os itens selecionados.
-- **Resultado:** o preview passa a ser alimentado **só pelos itens selecionados** na árvore (ou pela lista plana do Storage, como antes).
+- **Resultado:** o preview (na página **Projetos**) passa a ser alimentado **só pelos itens selecionados** na árvore (ou pela lista plana do Storage, como antes).
 
-### 3.4 Preview (nome atual → nome novo, na tela File system)
+### 3.4 Preview (nome atual → nome novo, na tela Projetos)
 
 - **O que é:** o **Preview** é a **tabela** que mostra, para cada arquivo, o **nome atual** e o **nome novo** que a regra geraria. É só **visualização**: nenhum arquivo no Storage é alterado até você clicar no botão **Renomear** (ou **Copiar com nome correto**).
 - **O que o usuário faz:**
@@ -66,7 +68,7 @@ A **Ingestão** (`/dashboard/ingestao`) é a tela para enviar arquivos ao Storag
   - Pode usar a **busca** para filtrar as linhas da tabela (só visual).
 - **Resultado:** você **vê** exatamente o que será renomeado antes de confirmar. Se dois nomes novos coincidirem, o sistema coloca sufixo `_1`, `_2`, etc., para não haver conflito.
 
-### 3.5 Renomear (aplicar no Storage, na tela File system)
+### 3.5 Renomear (aplicar no Storage, na tela Projetos)
 
 - **O que é:** o **botão “Renomear”** que aplica as renomeações no **Supabase Storage** (cada arquivo é “movido” do nome atual para o nome novo no mesmo bucket).
 - **O que o usuário faz:** clica em **Renomear** depois de conferir o preview. É necessário estar **logado**; sem login, a aplicação avisa.
@@ -82,7 +84,7 @@ A **Ingestão** (`/dashboard/ingestao`) é a tela para enviar arquivos ao Storag
 
 - **O que é:** no **modal de conclusão** (após cópia em massa), o botão **Baixar ZIP com índices** gera um ZIP com os arquivos renomeados e um arquivo **indice.csv** (nome_original, nome_novo, caminho_no_zip, data).
 - **O que o usuário faz:** clica em **Baixar ZIP com índices**; o navegador baixa o arquivo (ex.: `NomeProjeto-renomeados-YYYY-MM-DD-HHmm.zip`).
-- **Resultado:** ZIP para uso local; **Continuar no file manager** fecha o modal e mantém o usuário na tela File system.
+- **Resultado:** ZIP para uso local; **Continuar no file manager** fecha o modal e mantém o usuário na tela Projetos.
 
 ---
 
@@ -90,10 +92,11 @@ A **Ingestão** (`/dashboard/ingestao`) é a tela para enviar arquivos ao Storag
 
 1. **Entrar** (login em `/login`). Toda a aplicação está em área autenticada.
 2. **Enviar arquivos:** ir em **Ingestão** no menu (`/dashboard/ingestao`) e fazer upload (lote ou único) para o Storage.
-3. **Ir ao File system:** no menu, abrir **File system** (`/dashboard/file-manager`).
-4. **Definir a regra:** escolher um padrão (e, se for o caso, preencher Operadora, Tipo doc, Descrição ou criar nova regra). Opcional: usar **Sugerir nome com IA** (com ou sem metadados/trecho de conteúdo).
-5. **Montar o preview:** usar **“Usar arquivos do Storage”**, **“Usar seleção no preview”** (itens marcados na Árvore) ou “Usar seed do repositório” para preencher a tabela nome atual → nome novo; conferir e ajustar a regra até ficar como deseja.
-6. **Renomear ou Copiar:** clicar em **Renomear** (move no Storage) ou em **Copiar com nome correto** (copia para a pasta Renomeados). Após copiar, o modal permite **Baixar ZIP com índices** ou **Continuar no file manager**.
+3. **(Opcional) Ver estrutura em árvore:** no menu, abrir **File system** (`/dashboard/file-manager`) para expandir pastas e marcar arquivos para o preview.
+4. **Ir a Projetos:** no menu, abrir **Projetos** (`/dashboard/projetos`).
+5. **Definir a regra: escolher um padrão (e, se for o caso, preencher Operadora, Tipo doc, Descrição ou criar nova regra). Opcional: usar **Sugerir nome com IA** (com ou sem metadados/trecho de conteúdo).
+6. **Montar o preview:** usar **“Usar arquivos do Storage”**, **“Usar seleção no preview”** (itens marcados na Árvore) ou “Usar seed do repositório” para preencher a tabela nome atual → nome novo; conferir e ajustar a regra até ficar como deseja.
+7. **Renomear ou Copiar:** clicar em **Renomear** (move no Storage) ou em **Copiar com nome correto** (copia para a pasta Renomeados). Após copiar, o modal permite **Baixar ZIP com índices** ou **Continuar no file manager**.
 
 ---
 
@@ -109,7 +112,7 @@ O usuário **dá um nome ao projeto**; esse nome é o **nome da pasta raiz** no 
 ### 5.2 Na sidebar do dashboard (passos)
 
 - **Seletor de projeto:** dropdown com os projetos (pastas raiz) do usuário; opção “— Sem projeto —” usa o path legado `userId/`.
-- **Criar projeto:** campo “Novo projeto” + botão; Razão social + Operadora (obrigatórios); nome da pasta opcional. Pasta principal = nome do projeto; subpasta pode ser razão+operadora. Tipo e objeto não são do projeto. Regras: razão e operadora vêm do projeto; tipo e objeto em branco para cada documento poder variar. Preview: os arquivos só são renomeados no Storage quando você clica no botão **Renomear** (na tela File system / Projetos).
+- **Criar projeto:** campo “Novo projeto” + botão; Razão social + Operadora (obrigatórios); nome da pasta opcional. Pasta principal = nome do projeto; subpasta pode ser razão+operadora. Tipo e objeto não são do projeto. Regras: razão e operadora vêm do projeto; tipo e objeto em branco para cada documento poder variar. Preview: os arquivos só são renomeados no Storage quando você clica no botão **Renomear** (na página **Projetos**).
 
 ## 6. Onde os dados ficam
 

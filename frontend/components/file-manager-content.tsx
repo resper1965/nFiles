@@ -1,5 +1,10 @@
 "use client";
 
+/**
+ * @deprecated Use FileTreeSection on the file-manager page instead.
+ * This component is kept for reference; the page /dashboard/file-manager
+ * uses FileTreeSection with the same "estrutura de arquivos" copy.
+ */
 import { useState } from "react";
 import { useAuth } from "@/contexts/auth-context";
 import { useProject } from "@/contexts/project-context";
