@@ -43,6 +43,10 @@ type ProjectContextValue = {
   createProject: (nameOrParams: string | CreateProjectParams) => Promise<{ error: Error | null }>;
   /** Busca metadados do projeto (razão social, operadora, tipo, objeto). */
   getProjectMetadata: (projectName: string) => Promise<CreateProjectParams | null>;
+  /** Atualiza metadados do projeto (name identifica o projeto). */
+  updateProject: (projectName: string, params: Partial<Omit<CreateProjectParams, "name">>) => Promise<{ error: Error | null }>;
+  /** Exclui projeto (Storage + tabela). Após exclusão, recarrega lista e limpa currentProject se era o excluído. */
+  deleteProject: (projectName: string) => Promise<{ error: Error | null }>;
   loading: boolean;
 };
 
@@ -165,6 +169,64 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     []
   );
 
+  const updateProject = useCallback(
+    async (
+      projectName: string,
+      params: Partial<Omit<CreateProjectParams, "name">>
+    ): Promise<{ error: Error | null }> => {
+      if (!user?.id || !projectName?.trim()) {
+        return { error: new Error("Faça login e informe o nome do projeto.") };
+      }
+      const body: Record<string, string | null> = { name: projectName.trim() };
+      if (params.razao_social !== undefined) body.razao_social = String(params.razao_social).trim() || null;
+      if (params.operadora !== undefined) body.operadora = String(params.operadora).trim() || null;
+      if (params.tipo_documento !== undefined) body.tipo_documento = String(params.tipo_documento).trim() || null;
+      if (params.objeto_documento !== undefined) body.objeto_documento = String(params.objeto_documento).trim() || null;
+      try {
+        const res = await fetch("/api/projects", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+          credentials: "include",
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          return { error: new Error(typeof data.error === "string" ? data.error : "Erro ao atualizar projeto.") };
+        }
+        await loadProjects();
+        return { error: null };
+      } catch (e) {
+        return { error: e instanceof Error ? e : new Error("Erro ao atualizar projeto.") };
+      }
+    },
+    [user?.id, loadProjects]
+  );
+
+  const deleteProject = useCallback(
+    async (projectName: string): Promise<{ error: Error | null }> => {
+      if (!user?.id || !projectName?.trim()) {
+        return { error: new Error("Faça login e informe o nome do projeto.") };
+      }
+      const name = projectName.trim();
+      try {
+        const res = await fetch(`/api/projects?name=${encodeURIComponent(name)}`, {
+          method: "DELETE",
+          credentials: "include",
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          return { error: new Error(typeof data.error === "string" ? data.error : "Erro ao excluir projeto.") };
+        }
+        if (currentProject === name) setCurrentProject(null);
+        await loadProjects();
+        return { error: null };
+      } catch (e) {
+        return { error: e instanceof Error ? e : new Error("Erro ao excluir projeto.") };
+      }
+    },
+    [user?.id, currentProject, setCurrentProject, loadProjects]
+  );
+
   const value: ProjectContextValue = {
     currentProject,
     setCurrentProject,
@@ -172,6 +234,8 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     loadProjects,
     createProject,
     getProjectMetadata,
+    updateProject,
+    deleteProject,
     loading,
   };
 
