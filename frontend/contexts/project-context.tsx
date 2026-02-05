@@ -14,12 +14,14 @@ import { getSupabaseBrowser } from "@/lib/supabase-browser";
 
 const STORAGE_KEY = "nfiles-current-project";
 
-/** Retorna o access_token atual do cliente Supabase (localStorage). Usar nas chamadas à API. */
-async function getAccessToken(): Promise<string | null> {
+/** Retorna o access_token para chamadas à API: tenta getSession() no cliente; fallback session do AuthContext. */
+async function getAccessTokenForApi(sessionFromAuth: { access_token?: string } | null): Promise<string | null> {
   const supabase = getSupabaseBrowser();
-  if (!supabase) return null;
-  const { data: { session } } = await supabase.auth.getSession();
-  return session?.access_token ?? null;
+  if (supabase) {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session?.access_token) return session.access_token;
+  }
+  return sessionFromAuth?.access_token ?? null;
 }
 
 /** Parâmetros para criação de projeto com razão social e operadora (metadados + inferência). */
@@ -62,7 +64,7 @@ type ProjectContextValue = {
 const ProjectContext = createContext<ProjectContextValue | null>(null);
 
 export function ProjectProvider({ children }: { children: ReactNode }) {
-  const { user } = useAuth();
+  const { user, session } = useAuth();
   const [currentProject, setCurrentProjectState] = useState<string | null>(null);
   const [projectNames, setProjectNames] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
@@ -129,7 +131,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
 
       if (params) {
         try {
-          const token = await getAccessToken();
+          const token = await getAccessTokenForApi(session);
           const res = await fetch("/api/projects", {
             method: "POST",
             headers: {
@@ -158,14 +160,14 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       await loadProjects();
       return { error: null };
     },
-    [user?.id, setCurrentProject, loadProjects]
+    [user?.id, session, setCurrentProject, loadProjects]
   );
 
   const getProjectMetadata = useCallback(
     async (projectName: string): Promise<CreateProjectParams | null> => {
       if (!projectName?.trim()) return null;
       try {
-        const token = await getAccessToken();
+        const token = await getAccessTokenForApi(session);
         const res = await fetch(`/api/projects?name=${encodeURIComponent(projectName.trim())}`, {
           headers: token ? { Authorization: `Bearer ${token}` } : {},
           credentials: "include",
@@ -183,7 +185,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         return null;
       }
     },
-    []
+    [session]
   );
 
   const updateProject = useCallback(
@@ -200,7 +202,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       if (params.tipo_documento !== undefined) body.tipo_documento = String(params.tipo_documento).trim() || null;
       if (params.objeto_documento !== undefined) body.objeto_documento = String(params.objeto_documento).trim() || null;
       try {
-        const token = await getAccessToken();
+        const token = await getAccessTokenForApi(session);
         const res = await fetch("/api/projects", {
           method: "PATCH",
           headers: {
@@ -220,7 +222,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         return { error: e instanceof Error ? e : new Error("Erro ao atualizar projeto.") };
       }
     },
-    [user?.id, loadProjects]
+    [user?.id, session, loadProjects]
   );
 
   const deleteProject = useCallback(
@@ -230,7 +232,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       }
       const name = projectName.trim();
       try {
-        const token = await getAccessToken();
+        const token = await getAccessTokenForApi(session);
         const res = await fetch(`/api/projects?name=${encodeURIComponent(name)}`, {
           method: "DELETE",
           headers: token ? { Authorization: `Bearer ${token}` } : {},
@@ -247,7 +249,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
         return { error: e instanceof Error ? e : new Error("Erro ao excluir projeto.") };
       }
     },
-    [user?.id, currentProject, setCurrentProject, loadProjects]
+    [user?.id, session, currentProject, setCurrentProject, loadProjects]
   );
 
   const value: ProjectContextValue = {
