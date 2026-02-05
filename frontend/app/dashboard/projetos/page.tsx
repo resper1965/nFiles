@@ -25,14 +25,19 @@ const SEED_FULL_ID = "seed-full";
 
 export default function ProjetosPage() {
   const { user, session } = useAuth();
-  const { currentProject, setCurrentProject, projectNames, createProject, loading: projectLoading } = useProject();
+  const { currentProject, setCurrentProject, projectNames, createProject, getProjectMetadata, loading: projectLoading } = useProject();
   const { patterns, addPattern, removePattern, isCustomId } = useCustomPatterns();
   const [refreshTrigger, setRefreshTrigger] = useState(0);
   const [selectedPatternId, setSelectedPatternId] = useState(DEFAULT_PATTERN_ID);
   const [patternOverrides, setPatternOverrides] = useState<SeedFullOverrides>({});
   const [storageFileNames, setStorageFileNames] = useState<string[]>([]);
   const [newRuleOpen, setNewRuleOpen] = useState(false);
+  const [newProjectRazao, setNewProjectRazao] = useState("");
+  const [newProjectOperadora, setNewProjectOperadora] = useState("");
+  const [newProjectTipo, setNewProjectTipo] = useState("");
+  const [newProjectObjeto, setNewProjectObjeto] = useState("");
   const [newProjectName, setNewProjectName] = useState("");
+  const [inferring, setInferring] = useState(false);
   const [creating, setCreating] = useState(false);
   const [createError, setCreateError] = useState<string | null>(null);
   const [postBatchOpen, setPostBatchOpen] = useState(false);
@@ -60,6 +65,25 @@ export default function ProjetosPage() {
     };
   }, [user?.id, currentProject, refreshTrigger]);
 
+  useEffect(() => {
+    if (!currentProject?.trim()) return;
+    let cancelled = false;
+    getProjectMetadata(currentProject).then((meta) => {
+      if (!cancelled && meta) {
+        setPatternOverrides((prev) => ({
+          ...prev,
+          razao: meta.razao_social || prev.razao,
+          operadora: meta.operadora || prev.operadora,
+          tipoDoc: meta.tipo_documento || prev.tipoDoc,
+          descricao: meta.objeto_documento || prev.descricao,
+        }));
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [currentProject, getProjectMetadata]);
+
   const applyTemplate = useMemo(() => {
     if (selectedPatternId === SEED_FULL_ID) {
       return createSeedFullApply(patternOverrides);
@@ -67,15 +91,58 @@ export default function ProjetosPage() {
     return patterns.find((p) => p.id === selectedPatternId)?.apply;
   }, [selectedPatternId, patternOverrides, patterns]);
 
+  const handleInfer = async () => {
+    const razao = newProjectRazao.trim();
+    const operadora = newProjectOperadora.trim();
+    if (!razao || !operadora) return;
+    setInferring(true);
+    setCreateError(null);
+    try {
+      const res = await fetch("/api/projects/infer", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ razao_social: razao, operadora }),
+        credentials: "include",
+      });
+      const data = await res.json().catch(() => ({}));
+      if (res.ok && data.tipo_documento != null) {
+        setNewProjectTipo(data.tipo_documento);
+        setNewProjectObjeto(data.objeto_documento ?? "");
+      } else {
+        setCreateError(typeof data.error === "string" ? data.error : "Erro ao sugerir com IA.");
+      }
+    } catch {
+      setCreateError("Erro ao sugerir com IA.");
+    } finally {
+      setInferring(false);
+    }
+  };
+
   const handleCreateProject = async () => {
-    const name = newProjectName.trim();
-    if (!name) return;
+    const razao = newProjectRazao.trim();
+    const operadora = newProjectOperadora.trim();
+    if (!razao || !operadora) {
+      setCreateError("Razão social e operadora são obrigatórios.");
+      return;
+    }
     setCreating(true);
     setCreateError(null);
-    const { error } = await createProject(name);
+    const { error } = await createProject({
+      name: newProjectName.trim() || undefined,
+      razao_social: razao,
+      operadora,
+      tipo_documento: newProjectTipo.trim() || undefined,
+      objeto_documento: newProjectObjeto.trim() || undefined,
+    });
     setCreating(false);
     if (error) setCreateError(error.message);
-    else setNewProjectName("");
+    else {
+      setNewProjectRazao("");
+      setNewProjectOperadora("");
+      setNewProjectTipo("");
+      setNewProjectObjeto("");
+      setNewProjectName("");
+    }
   };
 
   const onApplyRenames = useCallback(
@@ -198,28 +265,84 @@ export default function ProjetosPage() {
                     ))}
                   </select>
                 </div>
-                <div className="flex flex-1 gap-2 sm:items-end">
-                  <div className="flex-1 space-y-1.5">
-                    <Label htmlFor="novo-projeto" className="text-xs">Novo projeto</Label>
+                <div className="flex flex-col gap-3">
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="novo-razao" className="text-xs">Razão social do cliente *</Label>
                     <Input
-                      id="novo-projeto"
-                      placeholder="Nome do projeto"
+                      id="novo-razao"
+                      placeholder="Ex.: INGREDION"
                       className="h-9"
-                      value={newProjectName}
-                      onChange={(e) => setNewProjectName(e.target.value)}
-                      onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleCreateProject())}
+                      value={newProjectRazao}
+                      onChange={(e) => setNewProjectRazao(e.target.value)}
                     />
                   </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="novo-operadora" className="text-xs">Operadora *</Label>
+                    <Input
+                      id="novo-operadora"
+                      placeholder="Ex.: UNIMED NACIONAL"
+                      className="h-9"
+                      value={newProjectOperadora}
+                      onChange={(e) => setNewProjectOperadora(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
                   <Button
                     type="button"
                     size="sm"
-                    className="h-9 shrink-0"
+                    variant="outline"
+                    onClick={handleInfer}
+                    disabled={inferring || !newProjectRazao.trim() || !newProjectOperadora.trim()}
+                  >
+                    {inferring ? "Sugerindo…" : "Sugerir com IA"}
+                  </Button>
+                </div>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="novo-tipo" className="text-xs">Tipo de documento</Label>
+                    <Input
+                      id="novo-tipo"
+                      placeholder="Ex.: CONTRATO, TERMO DE ADITAMENTO"
+                      className="h-9"
+                      value={newProjectTipo}
+                      onChange={(e) => setNewProjectTipo(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1.5">
+                    <Label htmlFor="novo-objeto" className="text-xs">Objeto do documento</Label>
+                    <Input
+                      id="novo-objeto"
+                      placeholder="Ex.: RENOVAÇÃO, REAJUSTE"
+                      className="h-9"
+                      value={newProjectObjeto}
+                      onChange={(e) => setNewProjectObjeto(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div className="space-y-1.5">
+                  <Label htmlFor="novo-projeto" className="text-xs">Nome da pasta (opcional)</Label>
+                  <Input
+                    id="novo-projeto"
+                    placeholder="Deixe em branco para derivar de razão + operadora"
+                    className="h-9"
+                    value={newProjectName}
+                    onChange={(e) => setNewProjectName(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && (e.preventDefault(), handleCreateProject())}
+                  />
+                </div>
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    size="sm"
                     onClick={handleCreateProject}
-                    disabled={creating || !newProjectName.trim()}
+                    disabled={creating || !newProjectRazao.trim() || !newProjectOperadora.trim()}
                   >
                     <FolderPlus className="mr-2 size-4" />
-                    Criar
+                    {creating ? "Criando…" : "Criar projeto"}
                   </Button>
+                </div>
                 </div>
               </div>
               {createError && <p className="text-xs text-destructive">{createError}</p>}

@@ -4,11 +4,12 @@ This directory contains plans for coordinating work across documentation and pla
 
 ## Plan Queue
 1. [Adapt Shadcn File Manager Nfiles](./adapt-shadcn-file-manager-nfiles.md)
-2. [Fluxo Usuario Renomeacao](./fluxo-usuario-renomeacao.md)
-3. [Proximos Passos Fluxo Usuario](./proximos-passos-fluxo-usuario.md)
-4. [Reestruturacao Telas Nfiles](./reestruturacao-telas-nfiles.md)
-5. [Refatoracao Frontend Clone Shadcn](./refatoracao-frontend-clone-shadcn.md)
-6. [Use Ai In Application](./use-ai-in-application.md)
+2. [Criacao Projetos Razao Operadora IA](./criacao-projetos-razao-operadora-ia.md)
+3. [Fluxo Usuario Renomeacao](./fluxo-usuario-renomeacao.md)
+4. [Proximos Passos Fluxo Usuario](./proximos-passos-fluxo-usuario.md)
+5. [Reestruturacao Telas Nfiles](./reestruturacao-telas-nfiles.md)
+6. [Refatoracao Frontend Clone Shadcn](./refatoracao-frontend-clone-shadcn.md)
+7. [Use Ai In Application](./use-ai-in-application.md)
 
 ## How To Create Or Update Plans
 - Run "ai-context plan <name>" to scaffold a new plan template.

@@ -13,6 +13,25 @@ import { createProject as createProjectStorage, listProjectNames } from "@/lib/s
 
 const STORAGE_KEY = "nfiles-current-project";
 
+/** Parâmetros para criação de projeto com razão social e operadora (metadados + inferência). */
+export type CreateProjectParams = {
+  /** Nome da pasta do projeto. Se omitido, derivado de razao_social + operadora. */
+  name?: string;
+  razao_social: string;
+  operadora: string;
+  tipo_documento?: string;
+  objeto_documento?: string;
+};
+
+function slugFromRazaoOperadora(razao: string, operadora: string): string {
+  const combined = `${razao} ${operadora}`
+    .replace(/[<>:"/\\|?*]/g, "_")
+    .replace(/\s+/g, "_")
+    .trim()
+    .slice(0, 200);
+  return combined || "projeto";
+}
+
 type ProjectContextValue = {
   /** Nome do projeto selecionado (pasta raiz). null = sem projeto (path legado userId/). */
   currentProject: string | null;
@@ -20,8 +39,10 @@ type ProjectContextValue = {
   /** Lista de nomes dos projetos (pastas raiz) do usuário. */
   projectNames: string[];
   loadProjects: () => Promise<void>;
-  /** Cria um projeto (pasta raiz) e seleciona. */
-  createProject: (name: string) => Promise<{ error: Error | null }>;
+  /** Cria um projeto (pasta raiz) e opcionalmente salva metadados. Aceita nome (legado) ou CreateProjectParams. */
+  createProject: (nameOrParams: string | CreateProjectParams) => Promise<{ error: Error | null }>;
+  /** Busca metadados do projeto (razão social, operadora, tipo, objeto). */
+  getProjectMetadata: (projectName: string) => Promise<CreateProjectParams | null>;
   loading: boolean;
 };
 
@@ -71,17 +92,77 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
   }, [user?.id, loadProjects]);
 
   const createProject = useCallback(
-    async (name: string): Promise<{ error: Error | null }> => {
-      const trimmed = name.trim();
-      if (!trimmed || !user?.id) return { error: new Error("Nome do projeto é obrigatório.") };
-      const { error } = await createProjectStorage(user.id, trimmed);
-      if (!error) {
-        setCurrentProject(trimmed);
-        await loadProjects();
+    async (nameOrParams: string | CreateProjectParams): Promise<{ error: Error | null }> => {
+      if (!user?.id) return { error: new Error("Faça login para criar projeto.") };
+
+      let name: string;
+      let params: CreateProjectParams | undefined;
+
+      if (typeof nameOrParams === "string") {
+        name = nameOrParams.trim();
+        if (!name) return { error: new Error("Nome do projeto é obrigatório.") };
+      } else {
+        const razao = String(nameOrParams.razao_social ?? "").trim();
+        const operadora = String(nameOrParams.operadora ?? "").trim();
+        if (!razao || !operadora) {
+          return { error: new Error("Razão social e operadora são obrigatórios.") };
+        }
+        name = nameOrParams.name?.trim() || slugFromRazaoOperadora(razao, operadora);
+        params = { name, razao_social: razao, operadora, tipo_documento: nameOrParams.tipo_documento, objeto_documento: nameOrParams.objeto_documento };
       }
-      return { error };
+
+      const { error } = await createProjectStorage(user.id, name);
+      if (error) return { error };
+
+      if (params) {
+        try {
+          const res = await fetch("/api/projects", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              name,
+              razao_social: params.razao_social,
+              operadora: params.operadora,
+              tipo_documento: params.tipo_documento ?? null,
+              objeto_documento: params.objeto_documento ?? null,
+            }),
+            credentials: "include",
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok) {
+            return { error: new Error(typeof data.error === "string" ? data.error : "Erro ao salvar metadados do projeto.") };
+          }
+        } catch (e) {
+          return { error: e instanceof Error ? e : new Error("Erro ao salvar metadados do projeto.") };
+        }
+      }
+
+      setCurrentProject(name);
+      await loadProjects();
+      return { error: null };
     },
     [user?.id, setCurrentProject, loadProjects]
+  );
+
+  const getProjectMetadata = useCallback(
+    async (projectName: string): Promise<CreateProjectParams | null> => {
+      if (!projectName?.trim()) return null;
+      try {
+        const res = await fetch(`/api/projects?name=${encodeURIComponent(projectName.trim())}`, { credentials: "include" });
+        const data = await res.json().catch(() => null);
+        if (!res.ok || data == null) return null;
+        return {
+          name: data.name,
+          razao_social: data.razao_social ?? "",
+          operadora: data.operadora ?? "",
+          tipo_documento: data.tipo_documento ?? undefined,
+          objeto_documento: data.objeto_documento ?? undefined,
+        };
+      } catch {
+        return null;
+      }
+    },
+    []
   );
 
   const value: ProjectContextValue = {
@@ -90,6 +171,7 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
     projectNames,
     loadProjects,
     createProject,
+    getProjectMetadata,
     loading,
   };
 
