@@ -14,12 +14,14 @@ import { getSupabaseBrowser } from "@/lib/supabase-browser";
 
 const STORAGE_KEY = "nfiles-current-project";
 
-/** Retorna o access_token para chamadas à API: tenta getSession() no cliente; fallback session do AuthContext. */
+/** Retorna o access_token para chamadas à API: refresha a sessão, depois getSession(); fallback session do AuthContext. */
 async function getAccessTokenForApi(sessionFromAuth: { access_token?: string } | null): Promise<string | null> {
   const supabase = getSupabaseBrowser();
   if (supabase) {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (session?.access_token) return session.access_token;
+    const { data: { session }, error } = await supabase.auth.refreshSession();
+    if (!error && session?.access_token) return session.access_token;
+    const { data: { session: s } } = await supabase.auth.getSession();
+    if (s?.access_token) return s.access_token;
   }
   return sessionFromAuth?.access_token ?? null;
 }

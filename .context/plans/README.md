@@ -11,8 +11,9 @@ This directory contains plans for coordinating work across documentation and pla
 6. [Recomendacoes Avaliacao Nfiles](./recomendacoes-avaliacao-nfiles.md)
 7. [Reestruturacao Telas Nfiles](./reestruturacao-telas-nfiles.md)
 8. [Refatoracao Frontend Clone Shadcn](./refatoracao-frontend-clone-shadcn.md)
-9. [Resolver Auth Exclusao Projetos](./resolver-auth-exclusao-projetos.md)
-10. [Use Ai In Application](./use-ai-in-application.md)
+9. [Resolver Auth Delecao Projetos Definitivo](./resolver-auth-delecao-projetos-definitivo.md)
+10. [Resolver Auth Exclusao Projetos](./resolver-auth-exclusao-projetos.md)
+11. [Use Ai In Application](./use-ai-in-application.md)
 
 ## How To Create Or Update Plans
 - Run "ai-context plan <name>" to scaffold a new plan template.
