@@ -15,6 +15,14 @@
       "summary": "Corrigir erro \"Não autenticado\" ao excluir projeto na UI: API DELETE /api/projects não recebe sessão quando o cliente usa localStorage (Supabase browser client) e o servidor lê cookies.",
       "linkedAt": "2026-02-05T21:55:13.919Z",
       "status": "active"
+    },
+    {
+      "slug": "resolver-auth-delecao-projetos-definitivo",
+      "path": "plans/resolver-auth-delecao-projetos-definitivo.md",
+      "title": "Resolver autenticação na deleção de projetos (definitivo)",
+      "summary": "Plano definitivo para eliminar o erro \"Não autenticado\" na exclusão de um projeto e em \"Apagar todos os projetos\": diagnóstico da causa raiz (token não obtido, não enviado ou não aceito pela API), correção em todas as camadas e validação end-to-end.",
+      "linkedAt": "2026-02-06T11:25:22.238Z",
+      "status": "active"
     }
   ],
   "completed": [],

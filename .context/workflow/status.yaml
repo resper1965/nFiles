@@ -18,25 +18,21 @@ phases:
     started_at: "2026-02-05T13:47:16.147Z"
     completed_at: "2026-02-05T13:47:33.088Z"
   V:
-    status: completed
+    status: filled
     started_at: "2026-02-05T13:47:33.089Z"
     completed_at: "2026-02-06T11:14:17.996Z"
-    outputs:
-      - path: ".context/plans/recomendacoes-avaliacao-nfiles.md"
-        status: filled
-      - path: ".context/workflow/status.yaml"
-        status: filled
   C:
     status: skipped
     reason: "Not required for scale MEDIUM"
 
 execution:
   history:
-    - timestamp: "2026-02-06T11:14:17.996Z"
+    - timestamp: "2026-02-06T11:25:22.247Z"
       phase: V
-      action: completed
-  last_activity: "2026-02-06T11:14:17.996Z"
-  resume_context: "Fase V (Validação) concluída"
+      action: plan_linked
+      plan: "resolver-auth-delecao-projetos-definitivo"
+  last_activity: "2026-02-06T11:25:22.247Z"
+  resume_context: "Plano vinculado - aguardando revisão"
 
 approval:
   plan_created: true
