@@ -233,9 +233,15 @@ export function ProjectProvider({ children }: { children: ReactNode }) {
       const name = projectName.trim();
       try {
         const token = await getAccessTokenForApi(session);
+        const headers: Record<string, string> = {};
+        if (token) {
+          headers.Authorization = `Bearer ${token}`;
+          headers["Content-Type"] = "application/json";
+        }
         const res = await fetch(`/api/projects?name=${encodeURIComponent(name)}`, {
           method: "DELETE",
-          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          headers,
+          body: token ? JSON.stringify({ accessToken: token }) : undefined,
           credentials: "include",
         });
         const data = await res.json().catch(() => ({}));

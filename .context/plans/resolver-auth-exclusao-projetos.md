@@ -1,6 +1,7 @@
 ---
 status: in_progress
 generated: 2026-02-05
+phase2_complete: "2026-02-05 — código com getAccessTokenForApi(session) e API Bearer já em main; deploy via push."
 agents:
   - type: "code-reviewer"
     role: "Review code changes for quality, style, and best practices"

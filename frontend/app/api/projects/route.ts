@@ -176,9 +176,18 @@ export async function PATCH(request: NextRequest) {
   }
 }
 
-/** DELETE: excluir um projeto (Storage + tabela projects). Query: name. */
+/** DELETE: excluir um projeto (Storage + tabela projects). Query: name. Body opcional: { accessToken } para auth. */
 export async function DELETE(request: NextRequest) {
-  const auth = await getUserIdFromRequest(request, {});
+  let body: { accessToken?: string } = {};
+  try {
+    const parsed = await request.json();
+    if (parsed && typeof parsed === "object" && typeof parsed.accessToken === "string") {
+      body = { accessToken: parsed.accessToken };
+    }
+  } catch {
+    // body vazio ou inválido — auth só por cookies ou header
+  }
+  const auth = await getUserIdFromRequest(request, body);
   if ("error" in auth) {
     return NextResponse.json({ error: auth.error }, { status: auth.status });
   }
